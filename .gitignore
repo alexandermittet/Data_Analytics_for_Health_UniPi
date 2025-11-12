@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Workspace files
+*.code-workspace
+
 # Distribution / packaging
 .Python
 build/
@@ -205,3 +208,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Large data files (exceed GitHub's 100MB limit)
+Data/laboratory_events_codes_2.csv
