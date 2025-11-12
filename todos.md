@@ -1,4 +1,4 @@
-GOAL is to create a subject profile with about ~10 feaut in the end:
+GOAL is to create a subject profile with about ~10 features in the end:
 
 1.1:
 - how to handle NaNs (age, gender of df1, ...) => remove / mean / ..
