@@ -111,3 +111,6 @@ the timestamps and the corresponding values for the chosen event type.
 associated with each subject_id. These codes, as well as all the other information
 extracted from the tabular data, can enrich your analysis also from the time series
 point of view
+
+ALEX notes 13. nov:
+Pca plots look interesting. Prob the professor did something to make the points look like that. 3 clear clusters but then a small tail/line down from the bottom area?
