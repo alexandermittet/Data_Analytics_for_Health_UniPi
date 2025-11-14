@@ -1,4 +1,4 @@
-GOAL is to create a subject profile with about ~10 features in the end:
+//MAIN GOAL is to create a subject profile with about ~10 features in the end//
 
 Task 1.1: data understanding
 prof notes:
@@ -48,7 +48,7 @@ Subtasks of Data Understanding:
 ● Data semantics for each feature (min, max, avg, std) above and the new one
 defined by the team
 ● Distribution of the variables and statistics
-● Assessing data quality (missing values, outliers, duplicated records, errors)
+● Assessing data quality (missing values, outliers, duplicated records, errors) we found some in the data understanding task: 142!
 ● Variables transformations
 ● Pairwise correlations and eventual elimination of redundant variables.
 Nice visualization and insights can be obtained, explore the web to get more ideas!
