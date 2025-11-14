@@ -118,7 +118,8 @@ Pca plots look interesting. Prob the professor did something to make the points 
 
 ## Alex 14. nov
 
-- 2.3 cluserting only has 2 clusters. I understand the method runs itself, however i dont believe k=2 says much about the data..
+- 2.3 cluserting only has 2 clusters. I understand the method runs itself, however i dont believe k=2 says much about the data.
+  - there is only 1 point iin cluster 1...
 
 ## NOTES FROM LECTURE 14.nov
 
