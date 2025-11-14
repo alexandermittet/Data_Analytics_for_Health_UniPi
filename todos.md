@@ -112,5 +112,15 @@ associated with each subject_id. These codes, as well as all the other informati
 extracted from the tabular data, can enrich your analysis also from the time series
 point of view
 
-ALEX notes 13. nov:
+## ALEX notes 13. nov
+
 Pca plots look interesting. Prob the professor did something to make the points look like that. 3 clear clusters but then a small tail/line down from the bottom area?
+
+## NOTES FROM LECTURE 14.nov
+
+- it's real data so there might be errors
+- nothing prevents from looking on web on what ranges to do etc
+  - and put this source in the report
+- remove as little as possible
+- data comes from different hospitals, therefore there are duplicate hadms and subjs.
+  - THE UNIQUE KEY IS THE PAIR!
