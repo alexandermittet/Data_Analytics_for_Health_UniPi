@@ -136,6 +136,9 @@ if ref is within range = 0
 if above: +1
 if its below the range: -1
 
+- check for duplicated records
+- 
+
 # DECISIONS WE MADE
 
 - we removed the "value" column from laboratory_events_codes_2 since its just a bad version of the valuenum column
