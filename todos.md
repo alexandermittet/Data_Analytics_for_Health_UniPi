@@ -129,9 +129,21 @@ Pca plots look interesting. Prob the professor did something to make the points 
 - data comes from different hospitals, therefore there are duplicate hadms and subjs.
   - THE UNIQUE KEY IS THE PAIR!
 
-# features to engineer
+# next steps
 
 for laboratory_events_codes_2, turn these into one: (valuenum valueuom ref_range_lower ref_range_upper flag)
 if ref is within range = 0
-if above: how much = e.g. +1
-if its below the range: how much = e.g. -1
+if above: +1
+if its below the range: -1
+
+# DECISIONS WE MADE
+
+- we removed the "value" column from laboratory_events_codes_2 since its just a bad version of the valuenum column
+- we checked for numerics values
+- we fixed mixed types like the .0 IDs
+- we parsed the datetime column
+- we remove DOD since it is not described in the PDF from professors
+- remove one of charttime or storetime since they are similar
+- remove qc_flag == FAIL
+  - bad data in => bad data out
+  - if we look at only QC fail, we should chack how many NaNs and outliers are in here. If its higher than QC okay, then this is our motivation
