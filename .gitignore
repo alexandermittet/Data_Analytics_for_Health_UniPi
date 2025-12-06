@@ -214,3 +214,6 @@ __marimo__/
 
 # Large data files (exceed GitHub's 100MB limit)
 Data/laboratory_events_codes_2.csv
+
+# Extra setup and utility files
+etc/
