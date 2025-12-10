@@ -17,49 +17,19 @@ My todo items:
 1.1.2 Merge
 
 - on which key? subejct id or subject & hadm ??
-What chatty said:
+plan:
 - Use a reference table (e.g., Diagnoses) with both hadm_id + subject_id.
 - For datasets with only hadm_id, merge with reference to add subject_id.
 - Compute all features per admission (hadm_id, subject_id).
 - Merge datasets on both keys (hadm_id, subject_id) to keep integrity.
-
 Finally, aggregate by subject_id to build patient-level profiles.
-1.2 data preparation
-prof notes:
-Improve the quality of your data and prepare it by extracting new features interesting
-for describing the patients. Therefore, you are going to describe the information
-patient wise and examples of indicators to be computed are:
-● Highest value of glucose recorded for the patient during the admission?
-● Total count of laboratory events linked to the admission?
-● Ratio between the number of tests flagged as abnormal and the total number
-of tests?
-● Total count of microbiology examinations for the admission?
-● Total count of procedure codes linked to the admission?
-Note that these examples are not mandatory. You can derive indicators that you
-prefer and that you consider interesting for describing the patients.
-It is MANDATORY that each team defines some indicators. Each of them has to be
-correlated with a description (in which should be clearly stated the objective of the
-variable derived) and when it is necessary also its mathematical formulation.
-The extracted variables will be useful for the clustering analysis (i.e., the second
-project’s task). Once the set of indicators is computed, the team has to explore the
-new features for a statistical analysis (distributions, outliers, visualizations,
-correlations).
-Subtasks of Data Understanding:
-● Data semantics for each feature (min, max, avg, std) above and the new one
-defined by the team
-● Distribution of the variables and statistics
-● Assessing data quality (missing values, outliers, duplicated records, errors) we found some in the data understanding task: 142!
-● Variables transformations
-● Pairwise correlations and eventual elimination of redundant variables.
-Nice visualization and insights can be obtained, explore the web to get more ideas!
-Please add these substaks in your final report.
 
-My todo items:
+Todo items:
 1.2.1 Transformations, NaN removal, otulier handling  
 
 - z normalization per col
 - outlier to remove?
-- remove qc_flag == FAIL
+- remove qc_flag == FAIL .. ?
 
 1.2.2 Feature engineering - create one feature per dataset at least
 
@@ -123,7 +93,7 @@ Pca plots look interesting. Prob the professor did something to make the points 
 ## NOTES FROM LECTURE 14.nov
 
 - it's real data so there might be errors
-- nothing prevents from looking on web on what ranges to do etc
+- nothing prevents us from looking on web on what ranges to do etc
   - and put this source in the report
 - remove as little as possible
 - data comes from different hospitals, therefore there are duplicate hadms and subjs.
@@ -137,7 +107,6 @@ if above: +1
 if its below the range: -1
 
 - check for duplicated records
-- 
 
 # DECISIONS WE MADE
 
@@ -150,3 +119,79 @@ if its below the range: -1
 - remove qc_flag == FAIL
   - bad data in => bad data out
   - if we look at only QC fail, we should chack how many NaNs and outliers are in here. If its higher than QC okay, then this is our motivation
+
+
+
+# Plan for 1.1 & 1.2 Dominik 21.11
+PLAN Dominik:
+
+Clean all datasets → add missing subject_id → compute admission-level features PER dataset → merge admission-level tables → aggregate to patient-level for clustering.
+
+**Step 1:** Clean each DF
+- 1. common core cleaning to all 4 dfs
+- 2. dataset specific cleaning
+errors: 
+    - wrong dtypes: ensure numerical are correct (.0, whitespace, dtypes..), enforcing integer hadm_id and subject_id
+    - convert dates to datetimes etc (dod needs to be handled seperatly)
+    - standardize categorical columns to string (note_type, label, fluid, spec_type_desc, org_name, ab_name, interpretation, icd_code)
+    - text fields: strip whitespace and convert empty strings to NaN.
+    - Lab: ensure valuenum is numeric; extract numbers from value when possible
+    - Microbiology: cast dilution_value to float; invalid entries → NaN.
+    - fix wrong NaN values anything resembling "in" ("___", "[]", "\nNone\n \n", "none", 9999, 999, -1, 'None', 'NA', "n/a", "Unknown","UNK", "null", "NULL", ".", " ", ... problematic tokens:
+    '___': 68645
+    'ART.': 6348
+    'NEG': 4234
+    'MIX.': 2173
+    'NONE': 2070 (false NA)
+    'INTUBATED.': 1576
+    'VEN.': 1476
+    'NOT INTUBATED.': 686
+    'CONTROLLED.': 684
+    '0-2': 585)
+    - Antibiotic dilution_values outside known MIC range → drop or cap
+    - Use domain-specific limits (e.g., glucose > 2000 → impossible)
+    - Check that charttime always precedes dod
+    - Identify admissions with no labs / no notes / no procedures (important for clustering completeness).
+
+- identify and handle individually missing values (NaNs)
+    - dod: nan means not dead: keep separate; convert afterward → derive is_dead
+
+- cleaning / reducing:
+    - Standardize boolean indicator columns (ECG, CT, MRI, etc.) to {0,1}.
+    - remove columns irrelevant for clustering (raw text) - which ones?
+    - icd_code mapping to fewer broad categories as a new variable (ICD hierarchy output features (chapters, blocks, counts))
+    - Unit normalization for labs dataset!!
+    - Antibiotic interpretation rules in microbiology
+    - Text column handling strategy
+
+Ensuring consistency of demographics across notes
+
+- check and handle duplicated records - Use subset-level duplicates:
+    - Heart Diagnoses: (note_id)
+    - labs: (hadm_id, charttime, label)
+    - Microbiology: (hadm_id, charttime, test_name, spec_type_desc)
+    - Procedures: (hadm_id, chartdate, icd_code)
+
+- check and handle outliers . (e.g. using visualization technique pearson, corr, scatter (3d also), parallel plot, histogram, boxplot, z-score.. ) 
+
+**Step 2:** Add subject_id to missing DF2 by merging with DF1&DF3&D4
+
+**Step 3:** Compute admission-level features via groupby(['subject_id', 'hadm_id'])
+- Sort events by time within each admission
+- Standardize units (mg/dL, mmol/L confusion in labs)
+- Create derived boolean flags (e.g., “organism_detected”, “abnormal_flag_ratio”)
+
+
+**Step 4:** Merge admission-level feature tables using how='inner' on=['subject_id','hadm_id']
+Data completeness audit before merging: Compute completeness matrix per admission ( decide whether to exclude sparse admissions before clustering)
+- has_notes (0/1)
+- has_labs (0/1)
+- has_micro (0/1)
+- has_procedures (0/1)    
+
+**Step 5:** Aggregate all admission-level features to patient-level groupby('subject_id')
+
+**Step 6**: Normalize
+- Scaling numeric variables (z-scaling, keep)
+- Encoding categorical variables
+- Log-transform extreme skewed labs
