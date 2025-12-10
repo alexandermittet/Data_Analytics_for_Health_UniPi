@@ -1,0 +1,1091 @@
+
+--- Page 1 ---
+
+Time Series - Similarity, Distances,
+Transformations and Clustering
+
+--- Page 2 ---
+
+What is a Time Series? 25.1750
+25.2250
+25.2500
+25.2500
+25.2750
+• A time series is a collection of observations
+25.3250
+25.3500
+made sequentially in time, generally at
+25.3500
+constant time intervals. 25.4000
+25.4000
+25.3250
+25.2250
+25.2000
+25.1750
+...
+24.6250
+24.6750
+24.6750
+24.6250
+24.6250
+24.6250
+24.6750
+24.7500
+
+--- Page 3 ---
+
+Time Series are Ubiquitous
+Blue: “God” -English Bible
+Red: “Dios” -Spanish Bible
+• You can measure many things …
+and things change over time.
+• Blood pressure 5
+0 x 10
+0 1 2 3 4 5 6 7 8
+• Donald Trump’s popularity rating
+• The annual rainfall in Pisa
+• The value of your stocks
+• In addition, other data type can
+be seen as time series
+• Text data: words count
+• Images: edges displacement
+• Videos: object positioning
+
+--- Page 4 ---
+
+Problems in Working with Time Series
+• Large amount of data.
+• Similarity is not easy to estimate.
+• Differing data formats.
+• Differing sampling rates.
+• Noise, missing values, etc.
+
+--- Page 5 ---
+
+What We Can Do With Time Series?
+• Trends, Seasonality • Motif Discovery
+10
+
+• Rule Discovery
+s = 0.5
+c = 0.3
+• Forecasting
+• Clustering
+• Classification
+
+--- Page 6 ---
+
+Time Series Components
+• A given TS consists of three systematic components including level,
+trend, seasonality, and one non-systematic component called noise.
+• Level: The average value in the series.
+• Trend: The increasing or decreasing value in the series.
+• Seasonality: The repeating short-term cycle in the series.
+• Noise: The random variation in the series.
+• A systematic component have consistency or recurrence and can be
+described and modeled.
+• A non-systematic component cannot be directly modeled.
+
+--- Page 7 ---
+
+Similarity, Distances and
+Transformations
+
+--- Page 8 ---
+
+Similarity
+• All these problems require similarity
+matching.
+• What is Similarity?
+• It is the quality or state of being similar, likeness,
+resemblance, as a similarity of features.
+• In time series analysis we recognize two
+kinds of similarity:
+• Similarity at the level of shape
+• Similarity at the structural level
+
+--- Page 9 ---
+
+Shape-based Similarities
+
+--- Page 10 ---
+
+Euclidean Distance
+• Given two time series:
+• Q = q … q C
+1 n
+1 n
+• C = c … c
+1 n
+time
+n
+( ) ( )2
+D Q, C   q − c
+Q
+i i
+1 n
+i=1
+time
+• T1 = < 56, 176, 110, 95 >
+• T2 = < 36, 126, 180, 80 >
+D(T1,T2) = sqrt [ (56-36)2 + (176-126)2 + (110-180)2 + (95-80)2 ]
+D(Q,C)
+
+--- Page 11 ---
+
+Problems with Euclidean Distance
+• Euclidean distance is very sensitive to “distortions” in the data.
+• These distortions are dangerous and should be removed.
+• Most common distortions:
+• Offset Translation
+• Amplitude Scaling
+• Linear Trend
+• Noise
+• They can be removed by using the appropriate transformations.
+
+--- Page 12 ---
+
+Transformation I: Offset Translation
+3 3
+D(Q,C)
+2.5 2.5
+2 2
+1.5 1.5
+1 1
+0.5 0.5
+0 0
+0 50 100 150 200 250 300 0 50 100 150 200 250 300
+Q = Q - mean(Q)
+C = C - mean(C)
+D(Q,C)
+0 50 100 150 200 250 300
+0 50 100 150 200 250 300
+
+--- Page 13 ---
+
+Transformation II: Amplitude Scaling
+0 100 200 300 400 500 600 700 800 900 1000 0 100 200 300 400 500 600 700 800 900 1000
+Q = (Q - mean(Q)) / std(Q)
+C = (C - mean(C)) / std(C)
+D(Q,C)
+
+--- Page 14 ---
+
+Transformation III: Linear Trend
+• Removing linear trend: fit the best fitting straight line to the time
+series, then subtract that line from the time series.
+12 5
+10 4
+8 3
+6 2
+4 1
+2 0
+0 -1
+-2 -2
+-4 -3
+0 20 40 60 80 100 120 140 160 180 200 0 20 40 60 80 100 120 140 160 180 200
+Removed linear trend,
+offset translation,
+amplitude scaling
+
+--- Page 15 ---
+
+Transformation IV: Noise
+• The intuition behind removing noise is to average each datapoints
+value with its neighbors.
+8 8
+6 6
+Q = smooth(Q)
+4 4
+C = smooth(C)
+2 2
+D(Q,C)
+0 0
+-2 -2
+-4 -4
+0 20 40 60 80 100 120 140 0 20 40 60 80 100 120 140
+
+--- Page 16 ---
+
+w=3
+Moving Average time value ma
+t1 20 -
+t2 24 22.0
+• Noise can be removed by a moving t3 22 24.0
+average (MA) that smooths the TS. t4 26 24.3
+t5 25 -
+• Given a window of length w and a TS t,
+the MA is applied as follows
+1 𝑤/2
+• 𝑡 = σ 𝑡 for 𝑖 = 1, … , 𝑛
+𝑖 𝑗
+𝑗=𝑖−𝑤/2
+𝑤
+• For example, if w=3 we have
+1
+• 𝑡 = (𝑡 + 𝑡 + 𝑡 )
+𝑖 𝑖−1 𝑖 𝑖+1
+3
+
+--- Page 17 ---
+
+Dynamic Time Warping
+• Sometimes two time series that are
+conceptually equivalent evolve at different
+speeds, at least in some moments.
+E.g. correspondence of peaks in
+two similar time series
+Fixed Time Axis. Sequences are
+Warped Time Axis. Nonlinear
+aligned “one to one”. Greatly suffers
+alignments are possible. Can correct
+from the misalignment in data.
+misalignments in data.
+Euclidean.
+Dynamic Time Warping.
+
+--- Page 18 ---
+
+I
+M
+Lowland Gorilla
+A
+G
+E
+A
+S
+Radial Scanning
+A
+T
+I
+M
+E
+S
+E
+R
+I
+E Mountain Gorilla
+S
+https://izbicki.me/blog/converting-images-into-time-series-for-data-mining.html
+
+--- Page 19 ---
+
+How is DTW Calculated?
+Q
+• We create a matrix with size of |Q| by
+|C|, then fill it in with the distance
+C
+between every pair of points in our two
+time series.
+C
+t
+r d
+a n
+t s e The Euclidean distance works only on the
+end
+Time
+30 diagonal of the matrix. The sequence of
+comparisons performed:
+Q
+• Start from pair of points (0,0)
+Time
+15
+• After point (i,i) move to (i+1,i+1)
+• End the process on (n,n)
+Time 5
+start
+
+--- Page 20 ---
+
+How is DTW Calculated?
+• The DTW distance can “freely” move
+outside the diagonal of the matrix
+C
+• Such cells correspond to temporally
+Q
+shifted points in the two time series
+Q
+C
+
+--- Page 21 ---
+
+How is DTW Calculated?
+C
+• Every possible warping between two
+time series, is a path through the matrix.
+Q
+Euclidean distance-like parts:
+• The constrained sequence of
+Both time series move
+comparisons performed:
+• Start from pair of points (0,0)
+• After point (i,j), either i or j increase by one,
+or both of them
+• End the process on (n,n)
+Time warping parts:
+Only one time series moves
+Warping path w
+
+--- Page 22 ---
+
+How is DTW Calculated?
+• Every possible warping between two time
+series, is a path through the matrix.
+• We find the best one using a recursive
+definition of the DTW:
+(i,j-2) (i,j-1) (i,j)
+(i,j) = cost of best path reaching cell (i,j)
+(i-1,j-2) (i-1,j-1) (i-1,j)
+= d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+(i-2,j-2) (i-2,j-1) (i-2,j)
+• Idea: best path must pass through (i-1,j),
+(i-1,j-1) or (i,j-1)
+
+--- Page 23 ---
+
+Dynamic Programming Approach
+C
+Q
+Step 1: compute the matrix of all d(q,c )
+i j
+• Point-to-point distances D(i,j) = | Q – C |
+i j
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+Step 2: compute the matrix of all path costs (i,j)
+Result
+• Start from cell (1,1)
+• Compute (2,1), (3,1), …, (n,1)
+Result
+• Repeat for columns 2, 3, …, n
+• Final result in last cell computed
+Step 3: find the path with the lowest value (best alignment)
+
+--- Page 24 ---
+
+Dynamic Programming Approach
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+Step 2: compute the matrix of all path costs (i,j)
+• Start from cell (1,1)
+X X X
+(1,1) = d(q ,c ) + min{ (0,0), (0,1), (1,0)}
+1 1
+= d(q ,c ) D(1,1)
+1 1
+= D(1,1)
+• Compute (2,1), (3,1), …, (n,1) +
+X X D(i,1)
+(i,1) = d(q,c ) + min{ (i-1,0), (i-1,1), (i,0) }
+i 1
+= d(q,c ) + (i-1,1)
+i 1
+= D(i,1) + (i-1,1)
+• Repeat for columns 2, 3, …, n
+min +
+– The general formula applies D(i,1)
+
+--- Page 25 ---
+
+Dynamic Programming Approach
+Example
+• c = < 3, 7, 4, 3, 4 >
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+• q = < 5, 7, 6, 4, 2 >
+
+--- Page 26 ---
+
+DTW – Exercise 1
+• Given the following input time series:
+• A) Compute the distance between “t1” and “t2”, using the DTW with
+distance between points computed as d(x,y) = |x – y|.
+• B) If we repeat the computation of point (A) above, this time with a
+Sakoe-Chiba band of size r=1, does the result change? Why?
+• C) If we compute DTW(T1,T2), where T1 is equal to t1 in reverse order
+(namely T1=<0,1,6,3,4>) and similarly for T2 (namely T2=<1,0,7,6,3>),
+is it true that DTW(T1,T2) = DTW(t1,t2)? Discuss the problem without
+providing any computation.
+
+--- Page 27 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 28 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 29 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 30 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 31 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 32 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 33 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 34 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 35 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 36 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 37 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 38 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 39 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 40 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 41 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 42 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 43 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 44 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 45 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+(i,j) = d(q ,c ) + min{ (i-1,j-1), (i-1,j ), (i,j-1) }
+i j
+
+--- Page 46 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+
+--- Page 47 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+• B) No. Because the DTW optimal path remains inside the band of size r=1
+
+--- Page 48 ---
+
+DTW – Exercise 1 - Solution
+• A)
+t2
+t2 t2
+t1
+t1 t1
+• B) No. Because the DTW optimal path remains inside the band of size r=1
+• C) Yes. The optimal path in one direction is the same in the opposite direction.
+Though, the cumulative costs matrix might look different.
+
+--- Page 49 ---
+
+Dynamic Time Warping – A Real Example
+• A Real Example
+• This example shows 2 one-
+week periods from the
+power demand time series.
+• Note that although they
+both describe 4-day work
+weeks, the blue sequence
+had Monday as a holiday,
+and the red sequence had
+Wednesday as a holiday.
+
+--- Page 50 ---
+
+Comparison of Euclidean Distance and DTW
+Trace
+Control
+4
+3
+2
+Leaves 1
+0
+-1
+-2
+-30 50 100 150 200 250 300
+2-Patterns
+Faces
+4
+3
+2
+1
+0
+-1
+Gun
+-2 Sign language
+-3
+-4
+0 10 20 30 40 50 60 70 80 90 0 10 20 30 40 50 60 70 80
+Word Spotting
+
+--- Page 51 ---
+
+Comparison of Euclidean Distance and DTW
+Error Rate
+• Classification using 1-NN
+Dataset Euclidean DTW
+• Class(x) = class of most similar
+Word Spotting 4.78 1.10
+training object
+Sign language 28.70 25.93
+• Leaving-one-out evaluation
+GUN 5.50 1.00
+• For each object: use it as test set,
+Nuclear Trace 11.00 0.00
+return overall average
+Leaves# 33.26 4.07
+(4) Faces 6.25 2.68
+Control Chart* 7.5 0.33
+2-Patterns 1.04 0.00
+
+--- Page 52 ---
+
+Comparison of Euclidean Distance and DTW
+Milliseconds
+• Classification using 1-NN
+Dataset Euclidean DTW
+• Class(x) = class of most similar
+Word Spotting 40 8,600
+training object
+Sign language 10 1,110
+• Leaving-one-out evaluation
+GUN 60 11,820
+• For each object: use it as test set,
+Nuclear Trace 210 144,470
+return overall average
+Leaves 150 51,830
+• DTW is two to three orders of
+(4) Faces 50 45,080
+magnitude slower than Euclidean
+Control Chart 110 21,900
+distance.
+2-Patterns 16,890 545,123
+
+--- Page 53 ---
+
+What we have seen so far…
+• Dynamic Time Warping gives much better results than Euclidean
+distance on many problems.
+• Dynamic Time Warping is very very slow to calculate!
+• Is there anything we can do to speed up similarity search under DTW?
+
+--- Page 54 ---
+
+Fast Approximations to DTW
+• Approximate the time series with some compressed or downsampled
+representation, and do DTW on the new representation.
+C
+Q
+C
+Q
+
+--- Page 55 ---
+
+Fast Approximations to DTW
+• There is strong visual evidence to suggests it works well
+• In the literature there is good experimental evidence for the utility of
+the approach on clustering, classification, etc.
+1.03 sec
+0.07 sec
+
+--- Page 56 ---
+
+Global Constraints
+• Slightly speed up the calculations
+• Prevent pathological warpings
+C C
+Q Q
+Sakoe-Chiba Band Itakura Parallelogram
+
+--- Page 57 ---
+
+Global Constraints
+• A global constraint constrains the indices of the warping path w =
+k
+(i,j) such that j-r  i  j+r, where r is a term defining allowed range of
+k
+warping for a given point in a sequence.
+• r can be considered as a window that reduces the number of calculus.
+r
+i
+Sakoe-Chiba Band Itakura Parallelogram
+
+--- Page 58 ---
+
+Accuracy vs. Width of Warping Window
+100
+95
+90
+W
+y
+Warping width that achieves
+c 85
+max Accuracy
+a
+r FACE 2%
+u
+c 80 GUNX 3%
+c
+A LEAF 8%
+75 Control Chart 4%
+TRACE 3%
+2-Patterns 3%
+70
+WordSpotting 3%
+65
+1 5 9 3 7 1 5 9 3 7 1 5 9 3 7 1 5 9 3 7 1 5 9 3 7 0
+1 1 2 2 2 3 3 4 4 4 5 5 6 6 6 7 7 8 8 8 9 9 0
+1
+W: Warping Width
+
+--- Page 59 ---
+
+Structural-based Similarities
+
+--- Page 60 ---
+
+Structure or Model Based Similarity
+• For long time series, shape-based similarity give
+A
+very poor results.
+• We need to measure similarly based on high B
+level structure.
+C
+• The basic idea is to:
+1. extract global features from the time series,
+Feature\Time Series A B C
+2. create a feature vector, and
+3. use it to measure similarity and/or classify Max Value 11 12 19
+• Example of features:
+Mean 5.3 6.4 4.8
+• mean, variance, skewness, kurtosis,
+• 1st derivative mean, 1st derivative variance, … Min Value 3 2 5
+• parameters of regression, forecasting, Markov model
+Autocorrelation 0.2 0.3 0.5
+… … … …
+
+--- Page 61 ---
+
+Compression Based Dissimilarity
+• Use as features whatever structure a
+given compression algorithm finds.
+𝐶(𝑥,𝑦)
+• 𝑑 𝑥, 𝑦 = 𝐶𝐷𝑀 𝑥, 𝑦 =
+𝐶 𝑥 +𝐶(𝑦)
+• Time series can be compressed using
+various transformations:
+• Piecewise Linear Approximation
+• Adaptive Piecewise Constant
+Approximation Euclidean CDM
+• Symbolic Aggregate Approximation
+
+--- Page 62 ---
+
+Time Series Approximation
+
+--- Page 63 ---
+
+Time Series Approximation
+• Approximation: represent a TS into a new smaller and
+simpler space and use this novel representation for
+computing.
+• Approximation is a special form of Dimensionality
+Reduction specifically designed for TSs.
+• Approximation vs Compression:
+• the approximated space is always understandable
+• the compressed space is not necessarily understandable.
+
+--- Page 64 ---
+
+Discrete Fourier Transform (DFT)
+• Apply a spectral decomposition of a signal
+• DTF is a method to decompose functions depending on time into functions
+depending on frequency
+• TS is a function depending on time
+Jean Fourier: 1768-1830
+• we have a value for temperature for each point in time.
+TS: a combination of seasonality, trend,
+Frequency is the and noise
+number of
+complete cycles
+• DFT extracts different seasonality patterns from a single time series variable
+• Example: Given an hourly temperature data set, DFT can detect the presence
+of day/night variations and summer/winter variations
+• it will tell you that those two seasonality (frequencies) are present in
+your data.
+
+--- Page 65 ---
+
+Discrete Fourier Transform (DFT)
+• A peak value at 10 Hz with a
+magnitude of one while all other
+frequencies are around zero.
+Jean Fourier: 1768-1830
+• The original TS where has 10
+complete cycles in a second with
+an amplitude of one.
+• Data comprises of 3 different
+elementary components with 3
+different frequencies (2, 5 and 10 Hz)
+at 3 different amplitudes (0.5, 1 and 2).
+
+--- Page 66 ---
+
+Discrete Fourier Transform (DFT)
+• Data comprises of 3 different
+elementary components with 3
+different frequencies (2, 5 and 10 Hz)
+at 3 different amplitudes (0.5, 1 and 2).
+• Sine functions of the different
+components.
+
+--- Page 67 ---
+
+Discrete Fourier Transform (DFT)
+• The basic idea of spectral decomposition is that any signal can be represented
+by the super position of a finite number of sine/cosine waves
+• Each wave is represented by a single complex number known as a Fourier
+coefficient as a linear combination of sines and cosines Jean Fourier
+• Keep only the first n/2 coefficients 1768-1830
+• Many of the Fourier coefficients have very low amplitude and thus contribute
+little to reconstructed signal.
+• These low amplitude coefficients can be discarded without much loss of
+information thereby saving storage space.
+• Pros
+• Good ability to compress most natural signals.
+• Fast, off the shelf DFT algorithms exist. O(nlog(n)).
+• Cons
+• Difficult to deal with sequences of different lengths.
+• Cannot support weighted distance measures.
+
+--- Page 68 ---
+
+Piecewise Linear Approximation (PLA)
+• Represent the time series as a sequence of straight lines.
+Karl Friedrich Gauss
+• Lines could be connected or disconnected
+1777 - 1855
+• In the literature there are numerous algorithms available for segmenting time
+series.
+• An open question is how to best choose K, the “optimal” number of segments
+used to represent a particular time series.
+• This problem involves a tradeoff between accuracy and compactness, and
+clearly has no general solution.
+• Pros:
+Each line segment has
+• data compression
+• length
+• noise filtering
+• left_height
+• able to support some interesting non-Euclidean similarity measures (right_height can
+be inferred by looking at
+the next segment)
+
+--- Page 69 ---
+
+Piecewise Aggregate Approximation (PAA)
+• Represent the time series as a sequence of box basis functions
+with each box of the same size.
+• It approximates a TS by dividing it into equal-length segments
+and recording the mean value of the data points that fall within
+the segment.
+• It reduces the data from n dimensions to M dimensions by
+dividing the time series into M equi-sized ``frames’’.
+• The mean value of the data falling within a frame is calculated,
+and a vector of these values becomes the data reduced
+representation.
+• Pros
+• Extremely fast to calculate
+• Supports non Euclidean measures
+• Supports weighted Euclidean distance
+
+--- Page 70 ---
+
+Adaptive Piecewise Constant Approximation (APCA)
+• It allows the segments to have arbitrary lengths, which in turn needs
+two numbers per segment.
+• The first number records the mean value of all the data points in
+segment, and the second number records the length of the segment.
+• APCA has the advantage of being able to place a single segment in an
+area of low activity and many segments in areas of high activity.
+• In addition, one has to consider the structure of the data in question.
+• Pros:
+• Fast to calculate O(n)
+• Supports non Euclidean measures
+• Supports weighted Euclidean distance
+
+--- Page 71 ---
+
+Symbolic Aggregate Approximation (SAX)
+• Convert the data into a discrete format, with a small alphabet size.
+• A time series T of length n is divided into w equal-sized segments;
+the values in each segment are then approximated and replaced by
+a single coefficient, which is their average.
+• Aggregating these w coefficients form the PAA representation of T.
+• Next, we determine the breakpoints that divide the distribution
+space into ɑ equiprobable regions, where ɑ is the alphabet size
+specified by the user
+• The breakpoints are determined such that the probability of a
+segment falling into any of the regions is approximately the same.
+• If the symbols are not equi-probable, some of the substrings would
+be more probable than others. Consequently, we would inject a
+probabilistic bias in the process.
+
+--- Page 72 ---
+
+Symbolic Aggregate Approximation (SAX)
+• Once the breakpoints are determined,
+baabccbc
+each region is assigned a symbol.
+• The PAA coefficients can then be easily
+mapped to the symbols corresponding to
+the regions in which they reside.
+• The symbols are assigned in a bottom-up
+fashion, i.e., the PAA coefficient that falls
+in the lowest region is converted to “a”,
+in the one above to “b”, and so forth.
+
+--- Page 73 ---
+
+Summary of Time Series Similarity
+• If you have short time series
+• use DTW after searching over the warping window size
+• If you have long time series
+• if you do know something about your data =>
+extract features
+• and you know nothing about your data =>
+try compression/approximation based dissimilarity
+
+--- Page 74 ---
+
+Summary of Time Series Representation
+
+--- Page 75 ---
+
+Clustering
+
+--- Page 76 ---
+
+Clustering Time Series
+• It is based on the similarity between time series.
+• The most similar data are grouped into clusters, but the clusters
+themselves should be dissimilar.
+• These groups to find are not predefined, i.e., it is an unsupervised
+learning task.
+• The two general methods of time series clustering are
+• Partitional Clustering and
+• Hierarchical Clustering
+
+--- Page 77 ---
+
+Types of Time Series Clustering
+• Whole clustering: similar to that of conventional clustering of discrete
+objects. Given a set of individual time series data, the objective is to
+group similar time series into the same cluster.
+• Features-based clustering: extract features, or time series motifs (see
+next lectures) as the features and use them to cluster time series.
+• Compression-based clustering: compress time series and run
+clustering on the compressed versions.
+• Subsequence clustering: given a single time series, subsequence
+clustering is performed on each individual time series extracted from
+the long time series with a sliding window.
+
+--- Page 78 ---
+
+Hierarchical Clustering
+• It computes pairwise distance, and then merges
+similar clusters in a bottom-up fashion, without
+the need of providing the number of clusters
+• It is one of the best tools to data evaluation, by
+creating a dendrogram of several time series from
+the domain of interest.
+• Its application is limited to small datasets due to
+its quadratic computational complexity.
+
+--- Page 79 ---
+
+Partitional Clustering
+• Typically uses the K-Means algorithm (or some variant) to optimize
+the objective function by minimizing the sum of squared intra-cluster
+errors.
+• K-Means is perhaps the most commonly used clustering algorithm in
+the literature, one of its shortcomings is the fact that the number of
+clusters, K, must be pre-specified.
+• Also the distance function plays a fundamental role both for the
+quality of the results and for the efficiency.
+
+--- Page 80 ---
+
+References
+• Forecasting: Principles and Practic. Rob J Hyndman and
+George Athanasaopoulus. (https://otexts.com/fpp2/)
+• Time Series Analysis and Its Applications. Robert H.
+Shumway and David S. Stoffer. 4th
+edition.(http://www.stat.ucla.edu/~frederic/221/W21/ts
+a4.pdf)
+• Mining Time Series Data. Chotirat Ann Ratanamahatana
+et al. 2010.
+(https://www.researchgate.net/publication/227001229_
+Mining_Time_Series_Data)
+• Dynamic Programming Algorithm Optimization for
+Spoken Word Recognition. Hiroaki Sakode et al. 1978.
+• Experiencing SAX: a Novel Symbolic Representation of
+Time Series. Jessica Line et al. 2009
+• Compression-based data mining of sequential data.
+Eamonn Keogh et al. 2007.

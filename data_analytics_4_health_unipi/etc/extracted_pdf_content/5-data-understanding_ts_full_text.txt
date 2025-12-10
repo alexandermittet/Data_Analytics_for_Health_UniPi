@@ -1,0 +1,329 @@
+
+--- Page 1 ---
+
+Data Understanding
+and pre-processing
+Time Series
+Anna Monreale and Francesca Naretto
+Computer Science Department
+Introduction to Data Mining, 2nd Edition
+Chapter 1 & Data Exploration (Additional Resources)
+
+--- Page 2 ---
+
+Also for time series: know your data
+• For preparing data for data mining task it is essential
+to have an overall understanding of your data
+• Gain insight in your data
+– with respect to your project goals
+– and general to understand properties
+• Find answers to the questions
+– How is the data quality?
+– What about outliers?
+
+--- Page 3 ---
+
+Which is the type of data?
+
+--- Page 4 ---
+
+Types of data sets
+Time series
+A collection of observations that are sequential in
+time, generally at constant time intervals.
+
+--- Page 5 ---
+
+Series
+A univariate series x is a sequence of values
+[𝑥 , 𝑥 , … 𝑥_𝑛] in a domain X.
+1 2
+A series is defined by:
+• Type: discrete, e.g., nucleotide bases, or continuous,
+e.g., stock values in a financial market
+• Sampling rate: How often values are sampled, e.g.,
+daily
+• Amplitude: Values sampled, e.g., value of the stock
+on a particular day
+
+--- Page 6 ---
+
+Series
+A multivariate time series x is a sequence that
+generalizes to multiple variables. Each instance is
+comprised of multiple time series, each representing a
+different feature.
+
+--- Page 7 ---
+
+TS are ubiquitos
+• You can measure many things … and things change
+over time.
+– Blood pressure
+– Donald Trump’s popularity rating
+– The annual rainfall in Pisa
+– The value of your stocks
+• In addition other data type can be considered as
+time series
+– Text data: words count
+– Images: edges displacement
+– Videos: object positioning
+
+--- Page 8 ---
+
+TS are ubiquitos
+
+--- Page 9 ---
+
+Time series characteristics
+• Large amount of data.
+• Similarity is not easy to estimate.
+• Different data formats.
+• Different sampling rates.
+• Noise, missing values, etc.
+
+--- Page 10 ---
+
+Time series understanding
+1. Look for trends
+2. Check for seasonality, cyclicity, irregularities
+3. Look for noise
+
+--- Page 11 ---
+
+Time series statistics
+• Mean: the expected value of the time series
+• Variance: variance of the time series
+• Trends: the slope of a linear model that models the
+time series behavior
+• Interquartile ranges: check the distributions
+• Skewness: is the distribution symmetric?
+• Kurtosis: what is the probability mass on the tails?
+
+--- Page 12 ---
+
+Trend
+It is a long-term movement of the time series. It is non repeating.
+Technically, it is a slope 𝑑𝑒𝑙𝑡𝑎 of a linear model, modelling the time
+series x.
+
+--- Page 13 ---
+
+Seasonality
+It is a regular periodic occurrence within a time
+interval, usually smaller than a year.
+
+--- Page 14 ---
+
+Cycle
+It is a repeated fluctuation long in duration but
+not as much as a trend.
+
+--- Page 15 ---
+
+Time series analysis
+To analyze and compare different time series,
+we first need to pre-process them such that
+they have all the same format.
+3
+2.5
+2
+1.5
+1
+0.5
+0
+0 50 100 150 200 250 300
+
+--- Page 16 ---
+
+Time series analysis
+• Often we need to employ Euclidean distance to
+analyze/compare time series. Euclidean distance is
+very sensitive to “distortions” in the data.
+• These distortions are dangerous and should be
+removed.
+• Most common distortions:
+• Offset Translation
+• Amplitude Scaling
+• Linear Trend
+• Noise
+• They can be removed by using the appropriate
+transformations.
+
+--- Page 17 ---
+
+Offset translation to remove distortions
+3 3
+2.5 2.5
+2 2
+1.5 1.5
+1 1
+0.5 0.5
+0 0
+0 50 100 150 200 250 300 0 50 100 150 200 250 300
+Q = Q - mean(Q)
+C = C - mean(C)
+D(Q,C)
+0 50 100 150 200 250 300
+0 50 100 150 200 250 300
+
+--- Page 18 ---
+
+Amplitude scaling
+Objective: compare inherent patterns in different TS independently of their magnitudes.
+Normalize the amplitude: divide by the standard deviation of the TS.
+0 100 200 300 400 500 600 700 800 900 1000
+0 100 200 300 400 500 600 700 800 900 1000
+Q = (Q - mean(Q)) / std(Q)
+C = (C - mean(C)) / std(C)
+D(Q,C)
+
+--- Page 19 ---
+
+TS: rolling statistics
+The time series may be huge. Analyzing it in its entirety may be
+difficult.
+A solution is to employ the ‘rolling’ method, in which the TS is
+analyzed extracting a series of consecutive subsequences of
+fixed length. Each sub-series gives a different view on TS and its
+called window.
+Given a window, each locality can now be described.
+Examples are: rolling mean, rolling std etc.
+
+--- Page 20 ---
+
+Moving average for noise removal
+w=3
+time value ma
+• Noise can be removed by a moving
+t1 20 -
+average (MA) that smooths the TS.
+t2 24 22.0
+• Given a window of length w and a TS t,
+t3 22 24.0
+the MA is applied as follows t4 26 24.3
+1 𝑤/2 t5 25 -
+• 𝑡 = σ 𝑡 for 𝑖 = 1, … , 𝑛
+𝑖 𝑗=𝑖−𝑤/2 𝑗
+𝑤
+• For example, if w=3 we have
+1
+• 𝑡 = (𝑡 + 𝑡 + 𝑡 )
+𝑖 𝑖−1 𝑖 𝑖+1
+3
+
+--- Page 21 ---
+
+TS: rolling statistics
+
+--- Page 22 ---
+
+TS: sliding statistics
+Given a window, we can slide it through the entire TS and
+compute some kind of metric on the entire TS.
+Similar to the convolution, we apply to the TS a mask sliding
+over the entire TS.
+
+--- Page 23 ---
+
+TS: sliding statistics – auto-covariance
+How much does a component of a TS correlate with the
+previous and future components?
+How to: compute the covariance between two components of
+the TS using the formula:
+High auto-covariance may
+indicate seasonality
+
+--- Page 24 ---
+
+TS: why all of these statistics?
+Before the application of any statistical model to TS, we need to
+analyze and pre-process them so that we can have stationary
+data.
+Stationary: consistent means, variance and covariance over
+time. No trends, seasonality and so on. No predictable patterns.
+Obtaining stationary TS may simplify tasks as classification or
+forecasting.
+
+--- Page 25 ---
+
+TS: how to know if they are stationary?
+1. Apply rolling statistics and see
+if there are high covariance (
+means presence of trends or
+seasonality).
+2. In the plot, we can see that
+the std is constant but mean
+is going up as trend. Hence it
+is not stationary
+
+--- Page 26 ---
+
+TS: how to know if they are stationary?
+We can conduct statistical tests,
+such as the Augmented Dickey-
+Fuller test: The test statistic looks
+for a unit root: if there is, it
+means that the TS is not
+stationary.
+
+--- Page 27 ---
+
+TS: how to make them stationary?
+We can conduct statistical tests,
+such as the Augmented Dickey-
+Fuller test: The test statistic looks
+for a unit root: if there is, it
+means that the TS is not
+stationary.
+
+--- Page 28 ---
+
+Linear trend
+Removing linear trend: fit the best fitting straight line to the
+time series, then subtract that line from the time series.
+12 5
+10 4
+8 3
+6 2
+4 1
+2 0
+0 -1
+-2 -2
+-4 -3
+0 20 40 60 80 100 120 140 160 180 200 0 20 40 60 80 100 120 140 160 180 200
+Removed linear trend,
+offset translation,
+amplitude scaling
+
+--- Page 29 ---
+
+Noise removal
+The intuition behind removing noise is to average each datapoints value with its
+neighbors.
+8 8
+6 6
+Q = smooth(Q)
+4 4
+C = smooth(C)
+2 2
+D(Q,C)
+0 0
+-2 -2
+-4 -4
+0 20 40 60 80 100 120 140 0 20 40 60 80 100 120 140
+
+--- Page 30 ---
+
+Log transformation
+You can apply the natural logarithm or the base 10 logarithm for stabilizing the
+variance, for linearizing trends, improve normal distribution.
+
+--- Page 31 ---
+
+Log transformation: pros/cons
+1. Data must be positive
+2. A little bit more difficult to interpret since the space
+of the data is changed, hence the info and pattern
+may be more difficult to comprehend
+3. Masking not always easy (how to handle zero?)
