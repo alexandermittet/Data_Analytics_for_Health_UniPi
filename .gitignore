@@ -3,3 +3,5 @@ notes.txt
 Datasets_for_project.zip
 .gitignore
 .DS_Store
+
+*.code-workspace
