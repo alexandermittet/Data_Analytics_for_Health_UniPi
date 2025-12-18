@@ -129,77 +129,70 @@ def main():
     """Main function to extract methods from PDFs."""
     # Define paths
     base_path = Path(__file__).parent.parent
-    slides_path = base_path.parent / 'slides'
-    output_path = base_path / 'code' / 'extracted_pdf_content'
-    output_path.mkdir(exist_ok=True)
+    output_path = base_path  # Output to root directory
     
-    # PDF files to process
-    pdf_files = [
-        '8_time_series_similarity_2024.pdf',
-        '5-data-understanding_ts.pdf'
-    ]
+    # PDF file to process (in root directory)
+    pdf_file = 'Project 2025-2026-last-update.pdf'
+    pdf_path = base_path / pdf_file
     
     all_results = {}
+        
+    if not pdf_path.exists():
+        print(f"Error: {pdf_path} not found. Exiting...")
+        return
     
-    for pdf_file in pdf_files:
-        pdf_path = slides_path / pdf_file
+    print(f"\n{'='*60}")
+    print(f"Processing: {pdf_file}")
+    print(f"{'='*60}")
+    
+    # Extract text
+    text = extract_text_from_pdf(pdf_path)
+    
+    if not text:
+        print(f"No text extracted from {pdf_file}")
+        return
+    
+    # Save full text
+    output_file = output_path / f"{pdf_file.replace('.pdf', '_full_text.txt')}"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(text)
+    print(f"Saved full text to: {output_file}")
+    
+    # Extract methods information
+    methods_info = extract_time_series_methods(text)
+    all_results[pdf_file] = {
+        'full_text': text,
+        'methods': methods_info
+    }
+    
+    # Save methods summary
+    summary_file = output_path / f"{pdf_file.replace('.pdf', '_methods_summary.md')}"
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write(f"# Methods Summary: {pdf_file}\n\n")
         
-        if not pdf_path.exists():
-            print(f"Warning: {pdf_path} not found. Skipping...")
-            continue
-        
-        print(f"\n{'='*60}")
-        print(f"Processing: {pdf_file}")
-        print(f"{'='*60}")
-        
-        # Extract text
-        text = extract_text_from_pdf(pdf_path)
-        
-        if not text:
-            print(f"No text extracted from {pdf_file}")
-            continue
-        
-        # Save full text
-        output_file = output_path / f"{pdf_file.replace('.pdf', '_full_text.txt')}"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(text)
-        print(f"Saved full text to: {output_file}")
-        
-        # Extract methods information
-        methods_info = extract_time_series_methods(text)
-        all_results[pdf_file] = {
-            'full_text': text,
-            'methods': methods_info
-        }
-        
-        # Save methods summary
-        summary_file = output_path / f"{pdf_file.replace('.pdf', '_methods_summary.md')}"
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            f.write(f"# Methods Summary: {pdf_file}\n\n")
-            
-            for category, results in methods_info.items():
-                if category == 'key_concepts':
-                    f.write(f"## Key Concepts\n\n")
-                    for concept in results[:50]:  # Limit to first 50
-                        f.write(f"- {concept}\n")
-                    f.write("\n")
-                else:
-                    f.write(f"## {category.replace('_', ' ').title()}\n\n")
-                    for term, contexts in results.items():
-                        if contexts:
-                            f.write(f"### {term}\n\n")
-                            # Show first 3 contexts
-                            for ctx in contexts[:3]:
-                                f.write(f"```\n{ctx}\n```\n\n")
-                    f.write("\n")
-        
-        print(f"Saved methods summary to: {summary_file}")
+        for category, results in methods_info.items():
+            if category == 'key_concepts':
+                f.write(f"## Key Concepts\n\n")
+                for concept in results[:50]:  # Limit to first 50
+                    f.write(f"- {concept}\n")
+                f.write("\n")
+            else:
+                f.write(f"## {category.replace('_', ' ').title()}\n\n")
+                for term, contexts in results.items():
+                    if contexts:
+                        f.write(f"### {term}\n\n")
+                        # Show first 3 contexts
+                        for ctx in contexts[:3]:
+                            f.write(f"```\n{ctx}\n```\n\n")
+                f.write("\n")
+    
+    print(f"Saved methods summary to: {summary_file}")
     
     # Create combined summary
     summary_file = output_path / "time_series_methods_summary.md"
     with open(summary_file, 'w', encoding='utf-8') as f:
         f.write("# Time Series Methods Summary\n\n")
-        f.write("This document summarizes the time series methods found in the course slides.\n\n")
+        f.write("This document summarizes the time series methods found in the project PDF.\n\n")
         
         for pdf_file, data in all_results.items():
             f.write(f"## {pdf_file}\n\n")
