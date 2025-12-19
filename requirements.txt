@@ -8,3 +8,4 @@ jupyter
 ipykernel
 tslearn==0.7.0
 xgboost
+umap-learn
