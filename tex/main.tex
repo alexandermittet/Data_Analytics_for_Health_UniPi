@@ -15,6 +15,7 @@
                     \secdef\@chapter\@schapter}
 \makeatother
 \usepackage{subcaption}
+\usepackage{caption}
 \usepackage{booktabs} % This is required for \toprule, \midrule, \bottomrule in your tables
 \usepackage{lmodern}
 \usepackage{type1cm}
@@ -163,6 +164,18 @@
 
 % Reduce chapter and section spacing - allow chapters to start on same page
 \usepackage{titlesec}
+% Make sections numbered like chapters (1, 2, 3...) instead of (0.1, 0.2...)
+\setcounter{secnumdepth}{3}
+% Reset section counter and make it independent (not relative to chapter)
+\setcounter{section}{0}
+\makeatletter
+\renewcommand{\@seccntformat}[1]{%
+  \csname the#1\endcsname\quad
+}
+\makeatother
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 % Prevent chapter from forcing new page
 \makeatletter
 \renewcommand{\@makechapterhead}[1]{%
@@ -179,9 +192,22 @@
   }}
 \makeatother
 \titlespacing*{\chapter}{0pt}{0pt}{10pt}
-\titlespacing*{\section}{0pt}{8pt plus 2pt minus 2pt}{4pt plus 1pt minus 1pt}
-\titlespacing*{\subsection}{0pt}{6pt plus 2pt minus 2pt}{3pt plus 1pt minus 1pt}
-\titlespacing*{\subsubsection}{0pt}{4pt plus 1pt minus 1pt}{2pt plus 1pt minus 1pt}
+\titlespacing*{\section}{0pt}{0pt}{6pt}
+\titlespacing*{\subsection}{0pt}{4pt plus 1pt minus 1pt}{3pt plus 1pt minus 1pt}
+\titlespacing*{\subsubsection}{0pt}{3pt plus 1pt minus 1pt}{2pt plus 1pt minus 1pt}
+
+% Prevent page breaks before sections - allow sections to start on same page
+\usepackage{etoolbox}
+\widowpenalty=10000
+\clubpenalty=10000
+% Allow more flexibility in page breaking to avoid large whitespace
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{8}
 
 % Modifica dello stile dei riferimenti, con il testo in cyano
 \hypersetup{
@@ -215,16 +241,16 @@
 % Rimuovere se non si vuole la tabella delle figure
 %\listoffigures
 
-\include{chapters/1DUandProcessing}
-\include{chapters/Clustering2}
-\include{chapters/Classification4}
-\include{chapters/TSAnalysis3}
-\include{chapters/TSClustering5}
-\include{chapters/TSClassification6}
+\input{chapters/1DUandProcessing}
+\input{chapters/Clustering2}
+\input{chapters/Classification4}
+\input{chapters/TSAnalysis3}
+\input{chapters/TSClustering5}
+\input{chapters/TSClassification6}
 
 %\appendix
 
-%\include{chapters/AppendiceA}
+%\input{chapters/AppendiceA}
 
 
 %\bibliographystyle{plain}

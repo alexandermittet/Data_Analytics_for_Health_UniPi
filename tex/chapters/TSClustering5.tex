@@ -1,9 +1,9 @@
-\chapter{Time Series Clustering}
+\section{Time Series Clustering}
 
 We apply clustering algorithms to preprocessed ECG Lead II time series data using Piecewise Aggregate Approximation (PAA) features. We focus on morphological patterns in ECG signals, revealing continuous variation rather than discrete clinical phenotypes. We compare three clustering algorithms: KMeans, Hierarchical Clustering, and Density-Based Clustering (DBSCAN).
 
 %%%%%%%%%%%%%%%
-\section{Feature Representation}
+\subsection{Feature Representation}
 
 Each time series (100 normalized points) is compressed to 20 PAA segments (5:1 compression), preserving morphology. The feature matrix is standardized using \textit{sklearn's StandardScaler}. Figure~\ref{fig:ts_feature_representation} illustrates the transformation.
 
@@ -27,15 +27,32 @@ Each time series (100 normalized points) is compressed to 20 PAA segments (5:1 c
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{KMeans Clustering}
+\subsection{KMeans Clustering}
 
 The Elbow Method (Figure~\ref{fig:kmeans_elbow}) shows gradual decrease in inertia without pronounced elbow, suggesting continuous variation. We selected $k=5$ based on diminishing returns. KMeans identified five clusters (sizes spanning 68-735 patients). Figure~\ref{fig:kmeans_profiles} shows cluster-average PAA profiles: some exhibit flat profiles (stable baselines), others show oscillations or trends, likely reflecting rhythm variations. Table~\ref{tab:kmeans_evaluation} shows Silhouette Score of 0.210, substantially lower than tabular clustering (0.941), indicating continuous processes rather than discrete clinical states.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.54\linewidth]{plots/5.2_kmeans_elbow.jpg}
-    \caption{Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.}
-    \label{fig:kmeans_elbow}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/5.2_kmeans_elbow.jpg}
+        \caption{Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.}
+        \label{fig:kmeans_elbow}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \small
+        \begin{tabular}{lr}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\ \hline
+        Number of Clusters ($k$) & 5 \\
+        Silhouette Score & 0.210 \\
+        Cluster Sizes & 131, 735, 292, 560, 68 \\ \hline
+        \end{tabular}
+        \captionof{table}{KMeans clustering evaluation metrics for ECG time series.}
+        \label{tab:kmeans_evaluation}
+    \end{minipage}
 \end{figure}
 
 \begin{figure}[h!]
@@ -45,22 +62,8 @@ The Elbow Method (Figure~\ref{fig:kmeans_elbow}) shows gradual decrease in inert
     \label{fig:kmeans_profiles}
 \end{figure}
 
-\begin{table}[h!]
-\centering
-\small
-\begin{tabular}{lr}
-\hline
-\textbf{Metric} & \textbf{Value} \\ \hline
-Number of Clusters ($k$) & 5 \\
-Silhouette Score & 0.210 \\
-Cluster Sizes & 131, 735, 292, 560, 68 \\ \hline
-\end{tabular}
-\caption{KMeans clustering evaluation metrics for ECG time series.}
-\label{tab:kmeans_evaluation}
-\end{table}
-
 %%%%%%%%%%%%%%%
-\section{Hierarchical Clustering}
+\subsection{Hierarchical Clustering}
 
 Hierarchical clustering with Ward linkage (Figure~\ref{fig:hierarchical_dendrogram}) reveals multi-scale structure, contrasting with tabular clustering's binary split. Extracting five clusters (Figure~\ref{fig:hierarchical_profiles}) yields similar patterns to KMeans with different assignments. Silhouette Score of 0.231 (slightly higher than KMeans) reflects Ward linkage's ability to form compact groups, though substantial overlap remains.
 
@@ -78,7 +81,7 @@ Hierarchical clustering with Ward linkage (Figure~\ref{fig:hierarchical_dendrogr
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{Density-Based Clustering (DBSCAN)}
+\subsection{Density-Based Clustering (DBSCAN)}
 
 DBSCAN identifies noise points without requiring a pre-specified number of clusters. Parameter exploration (see Appendix A) led to \textit{eps}=0.8 and \textit{min\_samples}=10, producing 27 clusters (sizes spanning 39-75 patients each) and 168 noise points (9.4\%). Figure~\ref{fig:dbscan_profiles} shows diverse PAA profiles, supporting the continuum hypothesis with DBSCAN identifying local density peaks. The noise points represent patients with idiosyncratic patterns, potentially rare arrhythmias or unique clinical presentations.
 
@@ -90,7 +93,7 @@ DBSCAN identifies noise points without requiring a pre-specified number of clust
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{Clinical Interpretation}
+\subsection{Clinical Interpretation}
 
 Demographic analysis (Figure~\ref{fig:age_gender_clusters}) shows similar age distributions (mean 68.4--70.8 years) and balanced gender proportions. Diagnostic patterns (Figure~\ref{fig:diagnosis_clusters}) show AMI, Heart Failure, and Atrial Fibrillation present in all clusters with similar frequencies, consistent with low silhouette scores indicating substantial overlap.
 
@@ -122,7 +125,7 @@ Demographic analysis (Figure~\ref{fig:age_gender_clusters}) shows similar age di
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{Evaluation and Comparison}
+\subsection{Evaluation and Comparison}
 
 All three methods produce low silhouette scores (0.203--0.231, Table~\ref{tab:clustering_comparison}), substantially lower than tabular clustering (0.941), reflecting fundamental differences: tabular features capture discrete clinical states, while ECG time series represent continuous physiological processes.
 

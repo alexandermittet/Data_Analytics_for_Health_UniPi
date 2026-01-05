@@ -1,26 +1,26 @@
-\chapter{Classification Analysis}
+\section{Classification Analysis}
 
 This chapter presents a supervised classification analysis aimed at distinguishing ischemic from non-ischemic cardiovascular conditions using the derived patient profiles.
 
-\section{Objective and Label Definition}
+\subsection{Objective and Label Definition}
 
 The objective of this stage is to construct a robust binary classifier separating ischemic (\texttt{Class 1}) from non-ischemic (\texttt{Class 0}) cardiovascular cases. Class labels were derived from primary ICD diagnoses, where the ischemic class was defined by the presence of ICD codes I20, I21, I22, I24, or I25. Admissions with multiple diagnoses were assigned to \texttt{Class 1} if at least one ischemic code was present.
 
-\section{Data Preparation and Model Training}
+\subsection{Data Preparation and Model Training}
 
-\subsection{Pre-processing}
+\subsubsection{Pre-processing}
 
-Classification was performed on the cleaned dataset described in Chapter~1, with categorical variables already encoded. The \textit{age} variable was excluded due to extensive missingness and the risk of data leakage through ICD-dependent imputation. No class rebalancing was applied, as the class ratio remained moderate (Class~0 / Class~1 = 1.18). The final dataset was split into training ($n=3513$) and test ($n=879$) subsets.
+Classification was performed on the cleaned dataset described in Section~1, with categorical variables already encoded. The \textit{age} variable was excluded due to extensive missingness and the risk of data leakage through ICD-dependent imputation. No class rebalancing was applied, as the class ratio remained moderate (Class~0 / Class~1 = 1.18). The final dataset was split into training ($n=3513$) and test ($n=879$) subsets.
 
-\subsection{Model Suite}
+\subsubsection{Model Suite}
 
 Six classification models were evaluated to capture diverse modeling assumptions: Logistic Regression, K-Nearest Neighbors (KNN), Support Vector Machine (SVM), Decision Tree, Random Forest, and Gradient Boosting. This selection balances interpretability, non-linearity, and ensemble-based robustness.
 
-\section{Model Evaluation}
+\subsection{Model Evaluation}
 
 Model performance was assessed on the held-out test set using Accuracy, Balanced Accuracy, Precision, Recall, F1-score, ROC-AUC, and confusion matrices. Cross-validation was additionally performed to evaluate stability.
 
-\subsection{Performance Comparison}
+\subsubsection{Performance Comparison}
 
 \begin{figure}[h!]
     \centering
@@ -31,7 +31,7 @@ Model performance was assessed on the held-out test set using Accuracy, Balanced
 
 All models demonstrated strong discriminative performance (Figure~\ref{fig:cls_metrics}). Gradient Boosting achieved the highest Balanced Accuracy (0.860) and ROC-AUC (0.930), closely followed by Random Forest (ROC-AUC 0.924). Logistic Regression and SVM achieved the highest Recall values (0.916 and 0.908), indicating superior sensitivity for ischemic cases. Error analysis reveals model-specific trade-offs: Logistic Regression produced the fewest false negatives (34), aligning with its high Recall, whereas KNN showed substantially higher false-negative counts (63). Ensemble models achieved a more balanced error distribution.
 
-\subsection{ROC-AUC Analysis}
+\subsubsection{ROC-AUC Analysis}
 
 \begin{figure}[h!]
     \centering
@@ -42,9 +42,9 @@ All models demonstrated strong discriminative performance (Figure~\ref{fig:cls_m
 
 The ROC curves (Figure~\ref{fig:roc}) confirm the superior discriminative ability of Gradient Boosting (AUC = 0.930), followed by Random Forest (0.924). Linear models also performed competitively, while KNN exhibited the lowest AUC (0.894). Cross-validation results demonstrate that Random Forest and Gradient Boosting achieve the most stable performance, with tightly clustered ROC-AUC and Balanced Accuracy distributions. Linear models also exhibit consistent behavior, whereas KNN shows higher variance.
 
-\section{Feature Importance Analysis}
+\subsection{Feature Importance Analysis}
 
-\subsection{Tree-Based Models}
+\subsubsection{Tree-Based Models}
 
 \begin{figure}[h!]
     \centering

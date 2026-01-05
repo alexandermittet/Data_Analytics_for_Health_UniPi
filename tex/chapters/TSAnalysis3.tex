@@ -1,9 +1,9 @@
-\chapter{Time Series Preprocessing}
+\section{Time Series Preprocessing}
 
 In this chapter, we outline the preprocessing pipeline applied to the ECG time series data extracted from the cardiovascular cohort.  Lead II channel was selected as the primary signal for analysis due to its clinical utility in rhythm assessment.
 
 %%%%%%%%%%%%%%%
-\section{Data Overview}
+\subsection{Data Overview}
 
 The ECG dataset comprises 1,786 patients with complete Lead II recordings. Each recording contains 5,000 samples collected over a 10-second window at a sampling frequency of 500 Hz, resulting in a total of 8.93 million signal samples. The raw ECG signals exhibit typical characteristics of clinical recordings: baseline wander, powerline interference, and amplitude variations across patients.
 
@@ -28,7 +28,7 @@ Signal Range & -1.53 to 2.27 mV \\ \hline
 \end{table}
 
 %%%%%%%%%%%%%%%
-\section{Preprocessing Pipeline}
+\subsection{Preprocessing Pipeline}
 
 To ensure comparability across patients and remove artifacts that could confound downstream analysis, we applied a five-step preprocessing pipeline. The pipeline addresses common challenges in ECG signal processing: baseline drift, amplitude normalization, linear trends, and noise contamination.
 
@@ -44,7 +44,7 @@ Figure~\ref{fig:preprocessing_steps} illustrates the sequential transformation o
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{Dimensionality Reduction with Piecewise Aggregate Approximation}
+\subsection{Dimensionality Reduction with Piecewise Aggregate Approximation}
 
 To enable efficient clustering analysis while preserving essential morphological characteristics, we applied Piecewise Aggregate Approximation (PAA). We reduce each 5,000-sample time series to 10 representative segments (500:1 compression) by dividing the signal into equal-length segments and computing mean values. Figure~\ref{fig:paa_approximation} demonstrates the PAA transformation for four representative patients, showing that the step-function approximation captures general morphology and amplitude variations suitable for distance-based clustering algorithms.
 
@@ -56,7 +56,7 @@ To enable efficient clustering analysis while preserving essential morphological
 \end{figure}
 
 %%%%%%%%%%%%%%%
-\section{Feature Extraction}
+\subsection{Feature Extraction}
 
 In addition to the PAA representation, we extracted 13 statistical features from each preprocessed time series to capture complementary aspects of signal behavior. These features include basic statistics (mean, variance, standard deviation, min, max, range, median), trend characteristics (slope and intercept from linear regression), temporal dependencies (lag-1 autocovariance), and distributional properties (25th and 75th percentiles, interquartile range).
 
@@ -69,5 +69,5 @@ The distributions of nine key features across the cohort, shown in Figure~\ref{f
     \label{fig:features_distribution}
 \end{figure}
 
-The preprocessed time series data, along with the PAA approximations and extracted features, serve as the foundation for the clustering analysis presented in Chapter 5 and the time series classification tasks in Chapter 6.
+The preprocessed time series data, along with the PAA approximations and extracted features, serve as the foundation for the clustering analysis presented in Section~5 and the time series classification tasks in Section~6.
 
