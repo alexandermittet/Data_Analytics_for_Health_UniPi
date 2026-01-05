@@ -56,7 +56,7 @@ print(f"Data directory: {DATA_DIR}")
 print("Libraries imported successfully!")
 ```
 
-    Data directory: Y:\Studium\3. Sem UniPI\Data Analytics 4 digital Health\data_analytics_4_health_unipi\data_analytics_4_health_unipi\Data
+    Data directory: Y:\Studium\3. Sem UniPI\Data Analytics 4 digital Health\data_analytics_4_health_unipi\Data
     Libraries imported successfully!
     
 
@@ -175,7 +175,8 @@ heart_diag[['subject_id', 'hadm_id', 'icd_code']].head(10)
 
 ```python
 # Load patient profile
-patient_profile = pd.read_csv(os.path.join(DATA_DIR, "patient_profile_broad_clean_clustering.csv"))
+patient_profile = pd.read_csv(os.path.join(DATA_DIR, "patient_profile_broad_clean_classification.csv"))
+# droopp age bc imputed with icd code information
 if "age" in patient_profile.columns:
     patient_profile.drop(columns=["age"], inplace=True)
 print(f"Patient Profile shape: {patient_profile.shape}")
@@ -184,9 +185,9 @@ print(f"\nFirst few rows:")
 patient_profile.head()
 ```
 
-    Patient Profile shape: (5166, 24)
+    Patient Profile shape: (5166, 23)
     
-    Columns: ['subject_id', 'hadm_id', 'is_dead', 'abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'max_blood_sodium', 'num_intermediate', 'susceptible_ratio', 'micro_qc_fail', 'micro_qc_warn', 'age_missing', 'max_urine_creatinine_missing', 'max_gas_pO2_missing', 'gender_F', 'clinical_activity', 'micro_resistance_score', 'history_depth', 'procedure_density', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index']
+    Columns: ['subject_id', 'hadm_id', 'abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'procedure_span_days_missing', 'gender_F', 'micro_resistance_score', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index', 'cardiac_comorbidity_score', 'has_hf', 'has_arrest', 'has_valvular', 'has_inflammatory', 'num_labs', 'total_procedures', 'total_microbio_events', 'unique_antibiotics', 'is_dead']
     
     First few rows:
     
@@ -214,151 +215,151 @@ patient_profile.head()
       <th></th>
       <th>subject_id</th>
       <th>hadm_id</th>
-      <th>is_dead</th>
       <th>abnormal_ratio</th>
       <th>qc_fail_ratio</th>
       <th>fluid_diversity</th>
-      <th>max_blood_sodium</th>
-      <th>num_intermediate</th>
-      <th>susceptible_ratio</th>
-      <th>micro_qc_fail</th>
-      <th>...</th>
+      <th>procedure_span_days_missing</th>
       <th>gender_F</th>
-      <th>clinical_activity</th>
       <th>micro_resistance_score</th>
-      <th>history_depth</th>
-      <th>procedure_density</th>
       <th>metabolic_stress_index</th>
       <th>oxygenation_dysfunction_index</th>
-      <th>inflammation_liver_stress_index</th>
-      <th>hematologic_stability_score</th>
-      <th>renal_failure_index</th>
+      <th>...</th>
+      <th>cardiac_comorbidity_score</th>
+      <th>has_hf</th>
+      <th>has_arrest</th>
+      <th>has_valvular</th>
+      <th>has_inflammatory</th>
+      <th>num_labs</th>
+      <th>total_procedures</th>
+      <th>total_microbio_events</th>
+      <th>unique_antibiotics</th>
+      <th>is_dead</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>10000980</td>
-      <td>26913865.0</td>
-      <td>1.0</td>
+      <td>26913865</td>
       <td>0.0</td>
       <td>0.024096</td>
-      <td>0.423036</td>
-      <td>143.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
       <td>1</td>
-      <td>2.375005</td>
       <td>0.0</td>
-      <td>0.752984</td>
-      <td>0.753653</td>
       <td>0.442771</td>
       <td>-0.155422</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>166.0</td>
+      <td>7.0</td>
+      <td>1.0</td>
       <td>0.0</td>
-      <td>-2.931703</td>
-      <td>1.375000</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>10000980</td>
-      <td>29654838.0</td>
+      <td>29654838</td>
+      <td>0.0</td>
+      <td>0.000000</td>
       <td>1.0</td>
-      <td>0.0</td>
-      <td>0.000000</td>
-      <td>0.423036</td>
-      <td>146.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
       <td>1</td>
-      <td>1.370160</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.746695</td>
-      <td>0.000000</td>
       <td>0.641566</td>
       <td>0.699255</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>59.0</td>
       <td>0.0</td>
-      <td>-2.230707</td>
-      <td>0.250000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>10002013</td>
-      <td>24760295.0</td>
-      <td>0.0</td>
+      <td>24760295</td>
       <td>0.0</td>
       <td>0.000000</td>
-      <td>0.423036</td>
-      <td>136.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
       <td>1</td>
-      <td>1.659969</td>
       <td>0.0</td>
-      <td>0.764603</td>
-      <td>0.554618</td>
       <td>2.487952</td>
       <td>0.706206</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50.0</td>
+      <td>2.0</td>
       <td>0.0</td>
-      <td>0.599638</td>
-      <td>-0.250000</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>3</th>
       <td>10002155</td>
-      <td>23822395.0</td>
-      <td>0.0</td>
+      <td>23822395</td>
       <td>0.0</td>
       <td>0.030227</td>
-      <td>0.554618</td>
-      <td>143.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
+      <td>2.0</td>
+      <td>0</td>
       <td>1</td>
-      <td>3.033730</td>
       <td>0.0</td>
-      <td>0.762245</td>
-      <td>0.316948</td>
       <td>-0.584337</td>
       <td>-0.044721</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>397.0</td>
+      <td>8.0</td>
+      <td>12.0</td>
       <td>0.0</td>
-      <td>-0.615942</td>
-      <td>0.414634</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>10004457</td>
-      <td>28723315.0</td>
-      <td>0.0</td>
+      <td>28723315</td>
       <td>0.0</td>
       <td>0.040000</td>
-      <td>0.423036</td>
-      <td>141.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
+      <td>1.0</td>
+      <td>1</td>
       <td>0</td>
-      <td>1.161098</td>
       <td>0.0</td>
-      <td>0.762553</td>
-      <td>0.000000</td>
       <td>-2.162651</td>
       <td>0.707751</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>25.0</td>
       <td>0.0</td>
-      <td>1.878623</td>
-      <td>-0.250000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 24 columns</p>
+<p>5 rows × 23 columns</p>
 </div>
 
 
@@ -622,7 +623,7 @@ print(f"Subjects without labels: {df_classification['label_ischemic'].isna().sum
 df_classification.head()
 ```
 
-    After merging: (4864, 25)
+    After merging: (4864, 24)
     Unique subjects: 4392
     
     Label distribution in merged dataset:
@@ -664,23 +665,23 @@ df_classification.head()
       <th></th>
       <th>subject_id</th>
       <th>hadm_id</th>
-      <th>is_dead</th>
       <th>abnormal_ratio</th>
       <th>qc_fail_ratio</th>
       <th>fluid_diversity</th>
-      <th>max_blood_sodium</th>
-      <th>num_intermediate</th>
-      <th>susceptible_ratio</th>
-      <th>micro_qc_fail</th>
-      <th>...</th>
+      <th>procedure_span_days_missing</th>
+      <th>gender_F</th>
       <th>micro_resistance_score</th>
-      <th>history_depth</th>
-      <th>procedure_density</th>
       <th>metabolic_stress_index</th>
       <th>oxygenation_dysfunction_index</th>
-      <th>inflammation_liver_stress_index</th>
-      <th>hematologic_stability_score</th>
-      <th>renal_failure_index</th>
+      <th>...</th>
+      <th>has_arrest</th>
+      <th>has_valvular</th>
+      <th>has_inflammatory</th>
+      <th>num_labs</th>
+      <th>total_procedures</th>
+      <th>total_microbio_events</th>
+      <th>unique_antibiotics</th>
+      <th>is_dead</th>
       <th>label_ischemic</th>
       <th>alex_dom_id</th>
     </tr>
@@ -689,126 +690,126 @@ df_classification.head()
     <tr>
       <th>0</th>
       <td>10000980</td>
-      <td>26913865.0</td>
-      <td>1.0</td>
+      <td>26913865</td>
       <td>0.0</td>
       <td>0.024096</td>
-      <td>0.423036</td>
-      <td>143.0</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.752984</td>
-      <td>0.753653</td>
       <td>0.442771</td>
       <td>-0.155422</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>166.0</td>
+      <td>7.0</td>
+      <td>1.0</td>
       <td>0.0</td>
-      <td>-2.931703</td>
-      <td>1.375000</td>
+      <td>1.0</td>
       <td>1</td>
-      <td>10000980_26913865.0</td>
+      <td>10000980_26913865</td>
     </tr>
     <tr>
       <th>1</th>
       <td>10000980</td>
-      <td>29654838.0</td>
+      <td>29654838</td>
+      <td>0.0</td>
+      <td>0.000000</td>
       <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.000000</td>
-      <td>0.423036</td>
-      <td>146.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.746695</td>
-      <td>0.000000</td>
       <td>0.641566</td>
       <td>0.699255</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>59.0</td>
       <td>0.0</td>
-      <td>-2.230707</td>
-      <td>0.250000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
       <td>1</td>
-      <td>10000980_29654838.0</td>
+      <td>10000980_29654838</td>
     </tr>
     <tr>
       <th>2</th>
       <td>10002013</td>
-      <td>24760295.0</td>
-      <td>0.0</td>
+      <td>24760295</td>
       <td>0.0</td>
       <td>0.000000</td>
-      <td>0.423036</td>
-      <td>136.0</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.764603</td>
-      <td>0.554618</td>
       <td>2.487952</td>
       <td>0.706206</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50.0</td>
+      <td>2.0</td>
       <td>0.0</td>
-      <td>0.599638</td>
-      <td>-0.250000</td>
+      <td>0.0</td>
+      <td>0.0</td>
       <td>1</td>
-      <td>10002013_24760295.0</td>
+      <td>10002013_24760295</td>
     </tr>
     <tr>
       <th>3</th>
       <td>10002155</td>
-      <td>23822395.0</td>
-      <td>0.0</td>
+      <td>23822395</td>
       <td>0.0</td>
       <td>0.030227</td>
-      <td>0.554618</td>
-      <td>143.0</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.762245</td>
-      <td>0.316948</td>
       <td>-0.584337</td>
       <td>-0.044721</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>397.0</td>
+      <td>8.0</td>
+      <td>12.0</td>
       <td>0.0</td>
-      <td>-0.615942</td>
-      <td>0.414634</td>
+      <td>0.0</td>
       <td>1</td>
-      <td>10002155_23822395.0</td>
+      <td>10002155_23822395</td>
     </tr>
     <tr>
       <th>4</th>
       <td>10004457</td>
-      <td>28723315.0</td>
-      <td>0.0</td>
+      <td>28723315</td>
       <td>0.0</td>
       <td>0.040000</td>
-      <td>0.423036</td>
-      <td>141.0</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>0</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.762553</td>
-      <td>0.000000</td>
       <td>-2.162651</td>
       <td>0.707751</td>
-      <td>0.0</td>
-      <td>1.878623</td>
-      <td>-0.250000</td>
+      <td>...</td>
       <td>0</td>
-      <td>10004457_28723315.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>25.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>10004457_28723315</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 26 columns</p>
+<p>5 rows × 25 columns</p>
 </div>
 
 
@@ -879,7 +880,7 @@ df_classification_unique.head()
     10218214    2
     dtype: int64
     
-    After deduplication: (4392, 26)
+    After deduplication: (4392, 25)
     Unique subjects: 4392
     ✓ No duplicate subject_ids - safe for train/test split
     
@@ -915,23 +916,23 @@ df_classification_unique.head()
       <th></th>
       <th>subject_id</th>
       <th>hadm_id</th>
-      <th>is_dead</th>
       <th>abnormal_ratio</th>
       <th>qc_fail_ratio</th>
       <th>fluid_diversity</th>
-      <th>max_blood_sodium</th>
-      <th>num_intermediate</th>
-      <th>susceptible_ratio</th>
-      <th>micro_qc_fail</th>
-      <th>...</th>
+      <th>procedure_span_days_missing</th>
+      <th>gender_F</th>
       <th>micro_resistance_score</th>
-      <th>history_depth</th>
-      <th>procedure_density</th>
       <th>metabolic_stress_index</th>
       <th>oxygenation_dysfunction_index</th>
-      <th>inflammation_liver_stress_index</th>
-      <th>hematologic_stability_score</th>
-      <th>renal_failure_index</th>
+      <th>...</th>
+      <th>has_arrest</th>
+      <th>has_valvular</th>
+      <th>has_inflammatory</th>
+      <th>num_labs</th>
+      <th>total_procedures</th>
+      <th>total_microbio_events</th>
+      <th>unique_antibiotics</th>
+      <th>is_dead</th>
       <th>label_ischemic</th>
       <th>alex_dom_id</th>
     </tr>
@@ -940,126 +941,126 @@ df_classification_unique.head()
     <tr>
       <th>0</th>
       <td>10000980</td>
-      <td>26913865.0</td>
-      <td>1.0</td>
+      <td>26913865</td>
       <td>0.0</td>
       <td>0.024096</td>
-      <td>0.423036</td>
-      <td>143.0</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.752984</td>
-      <td>0.753653</td>
       <td>0.442771</td>
       <td>-0.155422</td>
-      <td>0.000000</td>
-      <td>-2.931703</td>
-      <td>1.375000</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>166.0</td>
+      <td>7.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
       <td>1</td>
-      <td>10000980_26913865.0</td>
+      <td>10000980_26913865</td>
     </tr>
     <tr>
       <th>1</th>
       <td>10002013</td>
-      <td>24760295.0</td>
-      <td>0.0</td>
+      <td>24760295</td>
       <td>0.0</td>
       <td>0.000000</td>
-      <td>0.423036</td>
-      <td>136.0</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.764603</td>
-      <td>0.554618</td>
       <td>2.487952</td>
       <td>0.706206</td>
-      <td>0.000000</td>
-      <td>0.599638</td>
-      <td>-0.250000</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>50.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
       <td>1</td>
-      <td>10002013_24760295.0</td>
+      <td>10002013_24760295</td>
     </tr>
     <tr>
       <th>2</th>
       <td>10002155</td>
-      <td>23822395.0</td>
-      <td>0.0</td>
+      <td>23822395</td>
       <td>0.0</td>
       <td>0.030227</td>
-      <td>0.554618</td>
-      <td>143.0</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>1</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.762245</td>
-      <td>0.316948</td>
       <td>-0.584337</td>
       <td>-0.044721</td>
-      <td>0.000000</td>
-      <td>-0.615942</td>
-      <td>0.414634</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>397.0</td>
+      <td>8.0</td>
+      <td>12.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
       <td>1</td>
-      <td>10002155_23822395.0</td>
+      <td>10002155_23822395</td>
     </tr>
     <tr>
       <th>3</th>
       <td>10004457</td>
-      <td>28723315.0</td>
-      <td>0.0</td>
+      <td>28723315</td>
       <td>0.0</td>
       <td>0.040000</td>
-      <td>0.423036</td>
-      <td>141.0</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>0</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.762553</td>
-      <td>0.000000</td>
       <td>-2.162651</td>
       <td>0.707751</td>
-      <td>0.000000</td>
-      <td>1.878623</td>
-      <td>-0.250000</td>
+      <td>...</td>
       <td>0</td>
-      <td>10004457_28723315.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>25.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>10004457_28723315</td>
     </tr>
     <tr>
       <th>4</th>
       <td>10007058</td>
-      <td>22954658.0</td>
-      <td>0.0</td>
+      <td>22954658</td>
       <td>0.0</td>
       <td>0.013423</td>
-      <td>0.554618</td>
-      <td>141.0</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>0</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.761198</td>
-      <td>0.554618</td>
       <td>-0.183735</td>
       <td>0.701959</td>
-      <td>-0.512048</td>
-      <td>-1.475906</td>
-      <td>-0.250000</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>149.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
       <td>1</td>
-      <td>10007058_22954658.0</td>
+      <td>10007058_22954658</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 26 columns</p>
+<p>5 rows × 25 columns</p>
 </div>
 
 
@@ -1082,59 +1083,57 @@ print(f"\nMissing values per column:")
 print(X.isnull().sum().sort_values(ascending=False))
 ```
 
-    Feature matrix shape: (4392, 22)
+    Feature matrix shape: (4392, 21)
     Target shape: (4392,)
     
-    Feature columns: ['is_dead', 'abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'max_blood_sodium', 'num_intermediate', 'susceptible_ratio', 'micro_qc_fail', 'micro_qc_warn', 'age_missing', 'max_urine_creatinine_missing', 'max_gas_pO2_missing', 'gender_F', 'clinical_activity', 'micro_resistance_score', 'history_depth', 'procedure_density', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index']
+    Feature columns: ['abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'procedure_span_days_missing', 'gender_F', 'micro_resistance_score', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index', 'cardiac_comorbidity_score', 'has_hf', 'has_arrest', 'has_valvular', 'has_inflammatory', 'num_labs', 'total_procedures', 'total_microbio_events', 'unique_antibiotics', 'is_dead']
     
     Data types:
-    is_dead                            float64
     abnormal_ratio                     float64
     qc_fail_ratio                      float64
     fluid_diversity                    float64
-    max_blood_sodium                   float64
-    num_intermediate                   float64
-    susceptible_ratio                  float64
-    micro_qc_fail                      float64
-    micro_qc_warn                      float64
-    age_missing                          int64
-    max_urine_creatinine_missing         int64
-    max_gas_pO2_missing                  int64
+    procedure_span_days_missing          int64
     gender_F                             int64
-    clinical_activity                  float64
     micro_resistance_score             float64
-    history_depth                      float64
-    procedure_density                  float64
     metabolic_stress_index             float64
     oxygenation_dysfunction_index      float64
     inflammation_liver_stress_index    float64
     hematologic_stability_score        float64
     renal_failure_index                float64
+    cardiac_comorbidity_score          float64
+    has_hf                               int64
+    has_arrest                           int64
+    has_valvular                         int64
+    has_inflammatory                     int64
+    num_labs                           float64
+    total_procedures                   float64
+    total_microbio_events              float64
+    unique_antibiotics                 float64
+    is_dead                            float64
     dtype: object
     
     Missing values per column:
-    is_dead                            0
     abnormal_ratio                     0
     qc_fail_ratio                      0
     fluid_diversity                    0
-    max_blood_sodium                   0
-    num_intermediate                   0
-    susceptible_ratio                  0
-    micro_qc_fail                      0
-    micro_qc_warn                      0
-    age_missing                        0
-    max_urine_creatinine_missing       0
-    max_gas_pO2_missing                0
+    procedure_span_days_missing        0
     gender_F                           0
-    clinical_activity                  0
     micro_resistance_score             0
-    history_depth                      0
-    procedure_density                  0
     metabolic_stress_index             0
     oxygenation_dysfunction_index      0
     inflammation_liver_stress_index    0
     hematologic_stability_score        0
     renal_failure_index                0
+    cardiac_comorbidity_score          0
+    has_hf                             0
+    has_arrest                         0
+    has_valvular                       0
+    has_inflammatory                   0
+    num_labs                           0
+    total_procedures                   0
+    total_microbio_events              0
+    unique_antibiotics                 0
+    is_dead                            0
     dtype: int64
     
 
@@ -1153,7 +1152,7 @@ for col in categorical_cols:
     print(f"{col} value counts:\n{X[col].value_counts()}")
 ```
 
-    Numerical features (22): ['is_dead', 'abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'max_blood_sodium', 'num_intermediate', 'susceptible_ratio', 'micro_qc_fail', 'micro_qc_warn', 'age_missing', 'max_urine_creatinine_missing', 'max_gas_pO2_missing', 'gender_F', 'clinical_activity', 'micro_resistance_score', 'history_depth', 'procedure_density', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index']
+    Numerical features (21): ['abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'procedure_span_days_missing', 'gender_F', 'micro_resistance_score', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index', 'cardiac_comorbidity_score', 'has_hf', 'has_arrest', 'has_valvular', 'has_inflammatory', 'num_labs', 'total_procedures', 'total_microbio_events', 'unique_antibiotics', 'is_dead']
     
     Categorical features (0): []
     
@@ -1185,10 +1184,10 @@ X_processed.head()
 
     
     After preprocessing:
-    Shape: (4392, 22)
+    Shape: (4392, 21)
     Missing values: 0
     
-    Feature columns: ['is_dead', 'abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'max_blood_sodium', 'num_intermediate', 'susceptible_ratio', 'micro_qc_fail', 'micro_qc_warn', 'age_missing', 'max_urine_creatinine_missing', 'max_gas_pO2_missing', 'gender_F', 'clinical_activity', 'micro_resistance_score', 'history_depth', 'procedure_density', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index']
+    Feature columns: ['abnormal_ratio', 'qc_fail_ratio', 'fluid_diversity', 'procedure_span_days_missing', 'gender_F', 'micro_resistance_score', 'metabolic_stress_index', 'oxygenation_dysfunction_index', 'inflammation_liver_stress_index', 'hematologic_stability_score', 'renal_failure_index', 'cardiac_comorbidity_score', 'has_hf', 'has_arrest', 'has_valvular', 'has_inflammatory', 'num_labs', 'total_procedures', 'total_microbio_events', 'unique_antibiotics', 'is_dead']
     
 
 
@@ -1212,153 +1211,153 @@ X_processed.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>is_dead</th>
       <th>abnormal_ratio</th>
       <th>qc_fail_ratio</th>
       <th>fluid_diversity</th>
-      <th>max_blood_sodium</th>
-      <th>num_intermediate</th>
-      <th>susceptible_ratio</th>
-      <th>micro_qc_fail</th>
-      <th>micro_qc_warn</th>
-      <th>age_missing</th>
-      <th>...</th>
+      <th>procedure_span_days_missing</th>
       <th>gender_F</th>
-      <th>clinical_activity</th>
       <th>micro_resistance_score</th>
-      <th>history_depth</th>
-      <th>procedure_density</th>
       <th>metabolic_stress_index</th>
       <th>oxygenation_dysfunction_index</th>
       <th>inflammation_liver_stress_index</th>
       <th>hematologic_stability_score</th>
-      <th>renal_failure_index</th>
+      <th>...</th>
+      <th>cardiac_comorbidity_score</th>
+      <th>has_hf</th>
+      <th>has_arrest</th>
+      <th>has_valvular</th>
+      <th>has_inflammatory</th>
+      <th>num_labs</th>
+      <th>total_procedures</th>
+      <th>total_microbio_events</th>
+      <th>unique_antibiotics</th>
+      <th>is_dead</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.0</td>
       <td>0.0</td>
       <td>0.024096</td>
-      <td>0.423036</td>
-      <td>143.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
       <td>1.0</td>
-      <td>2.375005</td>
       <td>0.0</td>
-      <td>0.752984</td>
-      <td>0.753653</td>
+      <td>1.0</td>
+      <td>0.0</td>
       <td>0.442771</td>
       <td>-0.155422</td>
       <td>0.000000</td>
       <td>-2.931703</td>
-      <td>1.375000</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>166.0</td>
+      <td>7.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>0.0</td>
-      <td>0.0</td>
       <td>0.000000</td>
-      <td>0.423036</td>
-      <td>136.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>1.0</td>
       <td>0.0</td>
       <td>1.0</td>
-      <td>...</td>
-      <td>1.0</td>
-      <td>1.659969</td>
       <td>0.0</td>
-      <td>0.764603</td>
-      <td>0.554618</td>
       <td>2.487952</td>
       <td>0.706206</td>
       <td>0.000000</td>
       <td>0.599638</td>
-      <td>-0.250000</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>50.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>0.0</td>
-      <td>0.0</td>
       <td>0.030227</td>
-      <td>0.554618</td>
-      <td>143.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
       <td>2.0</td>
-      <td>1.0</td>
-      <td>...</td>
-      <td>1.0</td>
-      <td>3.033730</td>
       <td>0.0</td>
-      <td>0.762245</td>
-      <td>0.316948</td>
+      <td>1.0</td>
+      <td>0.0</td>
       <td>-0.584337</td>
       <td>-0.044721</td>
       <td>0.000000</td>
       <td>-0.615942</td>
-      <td>0.414634</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>397.0</td>
+      <td>8.0</td>
+      <td>12.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>3</th>
       <td>0.0</td>
-      <td>0.0</td>
       <td>0.040000</td>
-      <td>0.423036</td>
-      <td>141.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
       <td>0.0</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>1.161098</td>
-      <td>0.0</td>
-      <td>0.762553</td>
-      <td>0.000000</td>
       <td>-2.162651</td>
       <td>0.707751</td>
       <td>0.000000</td>
       <td>1.878623</td>
-      <td>-0.250000</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>25.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>0.0</td>
-      <td>0.0</td>
       <td>0.013423</td>
-      <td>0.554618</td>
-      <td>141.0</td>
+      <td>2.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>2.249905</td>
-      <td>0.0</td>
-      <td>0.761198</td>
-      <td>0.554618</td>
       <td>-0.183735</td>
       <td>0.701959</td>
       <td>-0.512048</td>
       <td>-1.475906</td>
-      <td>-0.250000</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>149.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 22 columns</p>
+<p>5 rows × 21 columns</p>
 </div>
 
 
@@ -1513,8 +1512,6 @@ print(f"{'='*60}")
     
 
 
-
-
 ```python
 # Standardize features (important for logistic regression and distance-based methods)
 # Check if X_train_scaled exists, if not, create it
@@ -1527,7 +1524,7 @@ if 'X_train_scaled' not in globals():
     # Convert back to DataFrame for easier handling
     X_train_scaled = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
     X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
-    
+        
     print("Features standardized successfully!")
     print(f"Training set shape: {X_train_scaled.shape}")
     print(f"Test set shape: {X_test_scaled.shape}")
@@ -1540,8 +1537,8 @@ X_train_final_scaled = X_train_scaled
 
     Standardizing features...
     Features standardized successfully!
-    Training set shape: (3513, 22)
-    Test set shape: (879, 22)
+    Training set shape: (3513, 21)
+    Test set shape: (879, 21)
     
 
 
@@ -1561,8 +1558,8 @@ print(f"Test set shape: {X_test_scaled.shape}")
 ```
 
     Features standardized successfully!
-    Training set shape: (3513, 22)
-    Test set shape: (879, 22)
+    Training set shape: (3513, 21)
+    Test set shape: (879, 21)
     
 
 ## 6. Train Classification Models
@@ -1660,20 +1657,20 @@ print(f"{'='*60}")
     ============================================================
     
     Training Metrics:
-      accuracy: 0.7284
-      balanced_accuracy: 0.7324
-      precision: 0.6772
-      recall: 0.7813
-      f1: 0.7255
-      roc_auc: 0.8109
+      accuracy: 0.8383
+      balanced_accuracy: 0.8428
+      precision: 0.7821
+      recall: 0.8984
+      f1: 0.8362
+      roc_auc: 0.9210
     
     Test Metrics:
-      accuracy: 0.7224
-      balanced_accuracy: 0.7272
-      precision: 0.6681
-      recall: 0.7871
-      f1: 0.7227
-      roc_auc: 0.8095
+      accuracy: 0.8407
+      balanced_accuracy: 0.8463
+      precision: 0.7773
+      recall: 0.9158
+      f1: 0.8409
+      roc_auc: 0.9201
     
     ============================================================
     Training K-Nearest Neighbors...
@@ -1688,92 +1685,92 @@ print(f"{'='*60}")
       roc_auc: 1.0000
     
     Test Metrics:
-      accuracy: 0.6940
-      balanced_accuracy: 0.6921
-      precision: 0.6667
-      recall: 0.6683
-      f1: 0.6675
-      roc_auc: 0.7431
+      accuracy: 0.8350
+      balanced_accuracy: 0.8357
+      precision: 0.8061
+      recall: 0.8441
+      f1: 0.8247
+      roc_auc: 0.8943
     
     ============================================================
     Training Support Vector Machine...
     ============================================================
     
     Training Metrics:
-      accuracy: 0.8064
-      balanced_accuracy: 0.8065
-      precision: 0.7790
-      recall: 0.8079
-      f1: 0.7932
-      roc_auc: 0.8777
+      accuracy: 0.8631
+      balanced_accuracy: 0.8678
+      precision: 0.8054
+      recall: 0.9257
+      f1: 0.8613
+      roc_auc: 0.9363
     
     Test Metrics:
-      accuracy: 0.7406
-      balanced_accuracy: 0.7400
-      precision: 0.7115
-      recall: 0.7327
-      f1: 0.7220
-      roc_auc: 0.8219
+      accuracy: 0.8430
+      balanced_accuracy: 0.8477
+      precision: 0.7854
+      recall: 0.9059
+      f1: 0.8414
+      roc_auc: 0.9101
     
     ============================================================
     Training Decision Tree...
     ============================================================
     
     Training Metrics:
-      accuracy: 0.8765
-      balanced_accuracy: 0.8735
-      precision: 0.8882
-      recall: 0.8364
-      f1: 0.8615
-      roc_auc: 0.9419
+      accuracy: 0.8984
+      balanced_accuracy: 0.9007
+      precision: 0.8610
+      recall: 0.9287
+      f1: 0.8936
+      roc_auc: 0.9653
     
     Test Metrics:
-      accuracy: 0.7144
-      balanced_accuracy: 0.7104
-      precision: 0.7008
-      recall: 0.6609
-      f1: 0.6803
-      roc_auc: 0.6919
+      accuracy: 0.8168
+      balanced_accuracy: 0.8198
+      precision: 0.7706
+      recall: 0.8564
+      f1: 0.8113
+      roc_auc: 0.8846
     
     ============================================================
     Training Random Forest...
     ============================================================
     
     Training Metrics:
-      accuracy: 0.8896
-      balanced_accuracy: 0.8860
-      precision: 0.9109
-      recall: 0.8420
-      f1: 0.8751
-      roc_auc: 0.9652
+      accuracy: 0.9112
+      balanced_accuracy: 0.9149
+      precision: 0.8617
+      recall: 0.9610
+      f1: 0.9086
+      roc_auc: 0.9812
     
     Test Metrics:
-      accuracy: 0.7679
-      balanced_accuracy: 0.7640
-      precision: 0.7646
-      recall: 0.7153
-      f1: 0.7391
-      roc_auc: 0.8392
+      accuracy: 0.8464
+      balanced_accuracy: 0.8509
+      precision: 0.7905
+      recall: 0.9059
+      f1: 0.8443
+      roc_auc: 0.9237
     
     ============================================================
     Training Gradient Boosting...
     ============================================================
     
     Training Metrics:
-      accuracy: 0.8950
-      balanced_accuracy: 0.8910
-      precision: 0.9226
-      recall: 0.8420
-      f1: 0.8805
-      roc_auc: 0.9668
+      accuracy: 0.9305
+      balanced_accuracy: 0.9314
+      precision: 0.9097
+      recall: 0.9424
+      f1: 0.9257
+      roc_auc: 0.9825
     
     Test Metrics:
-      accuracy: 0.7543
-      balanced_accuracy: 0.7510
-      precision: 0.7435
-      recall: 0.7104
-      f1: 0.7266
-      roc_auc: 0.8375
+      accuracy: 0.8578
+      balanced_accuracy: 0.8603
+      precision: 0.8163
+      recall: 0.8911
+      f1: 0.8521
+      roc_auc: 0.9300
     
     ============================================================
     All models trained successfully!
@@ -1853,98 +1850,98 @@ display(comparison_df)
     <tr>
       <th>0</th>
       <td>Logistic Regression</td>
-      <td>0.7284</td>
-      <td>0.7224</td>
-      <td>0.7324</td>
-      <td>0.7272</td>
-      <td>0.6772</td>
-      <td>0.6681</td>
-      <td>0.7813</td>
-      <td>0.7871</td>
-      <td>0.7255</td>
-      <td>0.7227</td>
-      <td>0.8109</td>
-      <td>0.8095</td>
+      <td>0.8383</td>
+      <td>0.8407</td>
+      <td>0.8428</td>
+      <td>0.8463</td>
+      <td>0.7821</td>
+      <td>0.7773</td>
+      <td>0.8984</td>
+      <td>0.9158</td>
+      <td>0.8362</td>
+      <td>0.8409</td>
+      <td>0.9210</td>
+      <td>0.9201</td>
     </tr>
     <tr>
       <th>1</th>
       <td>K-Nearest Neighbors</td>
       <td>1.0000</td>
-      <td>0.6940</td>
+      <td>0.8350</td>
       <td>1.0000</td>
-      <td>0.6921</td>
+      <td>0.8357</td>
       <td>1.0000</td>
-      <td>0.6667</td>
+      <td>0.8061</td>
       <td>1.0000</td>
-      <td>0.6683</td>
+      <td>0.8441</td>
       <td>1.0000</td>
-      <td>0.6675</td>
+      <td>0.8247</td>
       <td>1.0000</td>
-      <td>0.7431</td>
+      <td>0.8943</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Support Vector Machine</td>
-      <td>0.8064</td>
-      <td>0.7406</td>
-      <td>0.8065</td>
-      <td>0.7400</td>
-      <td>0.7790</td>
-      <td>0.7115</td>
-      <td>0.8079</td>
-      <td>0.7327</td>
-      <td>0.7932</td>
-      <td>0.7220</td>
-      <td>0.8777</td>
-      <td>0.8219</td>
+      <td>0.8631</td>
+      <td>0.8430</td>
+      <td>0.8678</td>
+      <td>0.8477</td>
+      <td>0.8054</td>
+      <td>0.7854</td>
+      <td>0.9257</td>
+      <td>0.9059</td>
+      <td>0.8613</td>
+      <td>0.8414</td>
+      <td>0.9363</td>
+      <td>0.9101</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Decision Tree</td>
-      <td>0.8765</td>
-      <td>0.7144</td>
-      <td>0.8735</td>
-      <td>0.7104</td>
-      <td>0.8882</td>
-      <td>0.7008</td>
-      <td>0.8364</td>
-      <td>0.6609</td>
-      <td>0.8615</td>
-      <td>0.6803</td>
-      <td>0.9419</td>
-      <td>0.6919</td>
+      <td>0.8984</td>
+      <td>0.8168</td>
+      <td>0.9007</td>
+      <td>0.8198</td>
+      <td>0.8610</td>
+      <td>0.7706</td>
+      <td>0.9287</td>
+      <td>0.8564</td>
+      <td>0.8936</td>
+      <td>0.8113</td>
+      <td>0.9653</td>
+      <td>0.8846</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Random Forest</td>
-      <td>0.8896</td>
-      <td>0.7679</td>
-      <td>0.8860</td>
-      <td>0.7640</td>
-      <td>0.9109</td>
-      <td>0.7646</td>
-      <td>0.8420</td>
-      <td>0.7153</td>
-      <td>0.8751</td>
-      <td>0.7391</td>
-      <td>0.9652</td>
-      <td>0.8392</td>
+      <td>0.9112</td>
+      <td>0.8464</td>
+      <td>0.9149</td>
+      <td>0.8509</td>
+      <td>0.8617</td>
+      <td>0.7905</td>
+      <td>0.9610</td>
+      <td>0.9059</td>
+      <td>0.9086</td>
+      <td>0.8443</td>
+      <td>0.9812</td>
+      <td>0.9237</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Gradient Boosting</td>
-      <td>0.8950</td>
-      <td>0.7543</td>
-      <td>0.8910</td>
-      <td>0.7510</td>
-      <td>0.9226</td>
-      <td>0.7435</td>
-      <td>0.8420</td>
-      <td>0.7104</td>
-      <td>0.8805</td>
-      <td>0.7266</td>
-      <td>0.9668</td>
-      <td>0.8375</td>
+      <td>0.9305</td>
+      <td>0.8578</td>
+      <td>0.9314</td>
+      <td>0.8603</td>
+      <td>0.9097</td>
+      <td>0.8163</td>
+      <td>0.9424</td>
+      <td>0.8911</td>
+      <td>0.9257</td>
+      <td>0.8521</td>
+      <td>0.9825</td>
+      <td>0.9300</td>
     </tr>
   </tbody>
 </table>
@@ -1991,7 +1988,7 @@ plt.show()
 
 
     
-![png](4_classification_files/4_classification_26_0.png)
+![png](4_classification_files/4_classification_25_0.png)
     
 
 
@@ -2020,7 +2017,7 @@ plt.show()
 
 
     
-![png](4_classification_files/4_classification_27_0.png)
+![png](4_classification_files/4_classification_26_0.png)
     
 
 
@@ -2049,7 +2046,7 @@ plt.show()
 
 
     
-![png](4_classification_files/4_classification_28_0.png)
+![png](4_classification_files/4_classification_27_0.png)
     
 
 
@@ -2070,12 +2067,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.79      0.67      0.72       475
-        Ischemic       0.67      0.79      0.72       404
+    Non-ischemic       0.92      0.78      0.84       475
+        Ischemic       0.78      0.92      0.84       404
     
-        accuracy                           0.72       879
-       macro avg       0.73      0.73      0.72       879
-    weighted avg       0.73      0.72      0.72       879
+        accuracy                           0.84       879
+       macro avg       0.85      0.85      0.84       879
+    weighted avg       0.85      0.84      0.84       879
     
     
     ============================================================
@@ -2083,12 +2080,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.72      0.72      0.72       475
-        Ischemic       0.67      0.67      0.67       404
+    Non-ischemic       0.86      0.83      0.84       475
+        Ischemic       0.81      0.84      0.82       404
     
-        accuracy                           0.69       879
-       macro avg       0.69      0.69      0.69       879
-    weighted avg       0.69      0.69      0.69       879
+        accuracy                           0.84       879
+       macro avg       0.83      0.84      0.83       879
+    weighted avg       0.84      0.84      0.84       879
     
     
     ============================================================
@@ -2096,12 +2093,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.77      0.75      0.76       475
-        Ischemic       0.71      0.73      0.72       404
+    Non-ischemic       0.91      0.79      0.84       475
+        Ischemic       0.79      0.91      0.84       404
     
-        accuracy                           0.74       879
-       macro avg       0.74      0.74      0.74       879
-    weighted avg       0.74      0.74      0.74       879
+        accuracy                           0.84       879
+       macro avg       0.85      0.85      0.84       879
+    weighted avg       0.85      0.84      0.84       879
     
     
     ============================================================
@@ -2109,12 +2106,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.72      0.76      0.74       475
-        Ischemic       0.70      0.66      0.68       404
+    Non-ischemic       0.87      0.78      0.82       475
+        Ischemic       0.77      0.86      0.81       404
     
-        accuracy                           0.71       879
-       macro avg       0.71      0.71      0.71       879
-    weighted avg       0.71      0.71      0.71       879
+        accuracy                           0.82       879
+       macro avg       0.82      0.82      0.82       879
+    weighted avg       0.82      0.82      0.82       879
     
     
     ============================================================
@@ -2122,12 +2119,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.77      0.81      0.79       475
-        Ischemic       0.76      0.72      0.74       404
+    Non-ischemic       0.91      0.80      0.85       475
+        Ischemic       0.79      0.91      0.84       404
     
-        accuracy                           0.77       879
-       macro avg       0.77      0.76      0.77       879
-    weighted avg       0.77      0.77      0.77       879
+        accuracy                           0.85       879
+       macro avg       0.85      0.85      0.85       879
+    weighted avg       0.85      0.85      0.85       879
     
     
     ============================================================
@@ -2135,12 +2132,12 @@ for name, result in results.items():
     ============================================================
                   precision    recall  f1-score   support
     
-    Non-ischemic       0.76      0.79      0.78       475
-        Ischemic       0.74      0.71      0.73       404
+    Non-ischemic       0.90      0.83      0.86       475
+        Ischemic       0.82      0.89      0.85       404
     
-        accuracy                           0.75       879
-       macro avg       0.75      0.75      0.75       879
-    weighted avg       0.75      0.75      0.75       879
+        accuracy                           0.86       879
+       macro avg       0.86      0.86      0.86       879
+    weighted avg       0.86      0.86      0.86       879
     
     
 
@@ -2180,7 +2177,7 @@ plt.show()
 
 
     
-![png](4_classification_files/4_classification_31_0.png)
+![png](4_classification_files/4_classification_30_0.png)
     
 
 
@@ -2205,12 +2202,13 @@ if "Logistic Regression" in trained_models:
     plt.axvline(x=0, color='black', linestyle='--', linewidth=0.8)
     plt.grid(axis='x', alpha=0.3)
     plt.tight_layout()
+    plt.savefig(os.path.join(FIG_DIR, "4_feature_importance_logistic_regression.png"), dpi=300, bbox_inches='tight')
     plt.show()
 ```
 
 
     
-![png](4_classification_files/4_classification_32_0.png)
+![png](4_classification_files/4_classification_31_0.png)
     
 
 
@@ -2273,33 +2271,35 @@ print(f"\n{'='*60}")
     
     Logistic Regression:
       Optimal threshold: 0.450
-      F1-score improvement: 0.7325 (vs 0.7227 at 0.5)
-      Recall: 0.8267 (vs 0.7871 at 0.5)
+      F1-score improvement: 0.8415 (vs 0.8409 at 0.5)
+      Recall: 0.9332 (vs 0.9158 at 0.5)
     
     K-Nearest Neighbors:
       Optimal threshold: 0.400
-      F1-score improvement: 0.6948 (vs 0.6675 at 0.5)
-      Recall: 0.7748 (vs 0.6683 at 0.5)
+      F1-score improvement: 0.8399 (vs 0.8247 at 0.5)
+      Recall: 0.8960 (vs 0.8441 at 0.5)
     
     Support Vector Machine:
-      Optimal threshold: 0.350
-      F1-score improvement: 0.7400 (vs 0.7220 at 0.5)
-      Recall: 0.8243 (vs 0.7327 at 0.5)
+      Optimal threshold: 0.250
+      F1-score improvement: 0.8472 (vs 0.8414 at 0.5)
+      Recall: 0.9332 (vs 0.9059 at 0.5)
+    
+
     
     Decision Tree:
-      Optimal threshold: 0.450
-      F1-score improvement: 0.6835 (vs 0.6803 at 0.5)
-      Recall: 0.6683 (vs 0.6609 at 0.5)
+      Optimal threshold: 0.300
+      F1-score improvement: 0.8200 (vs 0.8113 at 0.5)
+      Recall: 0.9134 (vs 0.8564 at 0.5)
     
     Random Forest:
-      Optimal threshold: 0.400
-      F1-score improvement: 0.7582 (vs 0.7391 at 0.5)
-      Recall: 0.8342 (vs 0.7153 at 0.5)
+      Optimal threshold: 0.450
+      F1-score improvement: 0.8471 (vs 0.8443 at 0.5)
+      Recall: 0.9257 (vs 0.9059 at 0.5)
     
     Gradient Boosting:
       Optimal threshold: 0.350
-      F1-score improvement: 0.7446 (vs 0.7266 at 0.5)
-      Recall: 0.8119 (vs 0.7104 at 0.5)
+      F1-score improvement: 0.8603 (vs 0.8521 at 0.5)
+      Recall: 0.9530 (vs 0.8911 at 0.5)
     
     ============================================================
     
@@ -2352,40 +2352,40 @@ print(f"\n{'='*60}")
     ============================================================
     
     Logistic Regression:
-      Accuracy: 0.7284 (+/- 0.0201)
-      Balanced Accuracy: 0.7321 (+/- 0.0211)
-      F1-Score: 0.7243 (+/- 0.0242)
-      ROC-AUC: 0.8047 (+/- 0.0156)
+      Accuracy: 0.8358 (+/- 0.0281)
+      Balanced Accuracy: 0.8403 (+/- 0.0273)
+      F1-Score: 0.8339 (+/- 0.0260)
+      ROC-AUC: 0.9180 (+/- 0.0133)
     
     K-Nearest Neighbors:
-      Accuracy: 0.6960 (+/- 0.0186)
-      Balanced Accuracy: 0.6950 (+/- 0.0180)
-      F1-Score: 0.6736 (+/- 0.0175)
-      ROC-AUC: 0.7473 (+/- 0.0186)
+      Accuracy: 0.8264 (+/- 0.0278)
+      Balanced Accuracy: 0.8273 (+/- 0.0289)
+      F1-Score: 0.8161 (+/- 0.0316)
+      ROC-AUC: 0.8956 (+/- 0.0128)
     
     Support Vector Machine:
-      Accuracy: 0.7432 (+/- 0.0154)
-      Balanced Accuracy: 0.7429 (+/- 0.0162)
-      F1-Score: 0.7254 (+/- 0.0204)
-      ROC-AUC: 0.8169 (+/- 0.0126)
+      Accuracy: 0.8389 (+/- 0.0185)
+      Balanced Accuracy: 0.8429 (+/- 0.0169)
+      F1-Score: 0.8359 (+/- 0.0156)
+      ROC-AUC: 0.9162 (+/- 0.0110)
     
     Decision Tree:
-      Accuracy: 0.7045 (+/- 0.0163)
-      Balanced Accuracy: 0.7001 (+/- 0.0132)
-      F1-Score: 0.6674 (+/- 0.0153)
-      ROC-AUC: 0.7039 (+/- 0.0211)
+      Accuracy: 0.8266 (+/- 0.0195)
+      Balanced Accuracy: 0.8278 (+/- 0.0207)
+      F1-Score: 0.8169 (+/- 0.0237)
+      ROC-AUC: 0.8720 (+/- 0.0320)
     
     Random Forest:
-      Accuracy: 0.7543 (+/- 0.0107)
-      Balanced Accuracy: 0.7482 (+/- 0.0107)
-      F1-Score: 0.7157 (+/- 0.0122)
-      ROC-AUC: 0.8269 (+/- 0.0152)
+      Accuracy: 0.8497 (+/- 0.0153)
+      Balanced Accuracy: 0.8527 (+/- 0.0148)
+      F1-Score: 0.8447 (+/- 0.0147)
+      ROC-AUC: 0.9297 (+/- 0.0120)
     
     Gradient Boosting:
-      Accuracy: 0.7541 (+/- 0.0174)
-      Balanced Accuracy: 0.7487 (+/- 0.0166)
-      F1-Score: 0.7184 (+/- 0.0176)
-      ROC-AUC: 0.8214 (+/- 0.0165)
+      Accuracy: 0.8523 (+/- 0.0138)
+      Balanced Accuracy: 0.8529 (+/- 0.0123)
+      F1-Score: 0.8427 (+/- 0.0114)
+      ROC-AUC: 0.9284 (+/- 0.0084)
     
     ============================================================
     
@@ -2424,12 +2424,13 @@ for idx, (title, metric_key) in enumerate(metrics_cv):
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 plt.tight_layout()
+plt.savefig(os.path.join(FIG_DIR, "4_cv_metrics_comparison.png"), dpi=300, bbox_inches='tight')
 plt.show()
 ```
 
 
     
-![png](4_classification_files/4_classification_38_0.png)
+![png](4_classification_files/4_classification_37_0.png)
     
 
 
