@@ -6,8 +6,14 @@
 
 %LLM fixes to compile error (Alexander 2nd jan 2026)
 \documentclass{report}
-% Allow chapters to start on same page
-\let\cleardoublepage\clearpage
+% Allow chapters to start on same page - prevent page breaks
+\makeatletter
+\renewcommand{\chapter}{%
+                    \thispagestyle{plain}%
+                    \global\@topnum\z@
+                    \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\makeatother
 \usepackage{subcaption}
 \usepackage{booktabs} % This is required for \toprule, \midrule, \bottomrule in your tables
 \usepackage{lmodern}
@@ -155,9 +161,24 @@
 \setlength{\abovedisplayshortskip}{2pt plus 1pt minus 1pt}
 \setlength{\belowdisplayshortskip}{2pt plus 1pt minus 1pt}
 
-% Reduce chapter and section spacing
+% Reduce chapter and section spacing - allow chapters to start on same page
 \usepackage{titlesec}
-\titlespacing*{\chapter}{0pt}{-20pt}{10pt}
+% Prevent chapter from forcing new page
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{0pt}%
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \@chapapp\space \thechapter
+        \par\nobreak
+        \vskip 10pt
+    \fi
+    \interlinepenalty\@M
+    \Huge \bfseries #1\par\nobreak
+    \vskip 10pt
+  }}
+\makeatother
+\titlespacing*{\chapter}{0pt}{0pt}{10pt}
 \titlespacing*{\section}{0pt}{8pt plus 2pt minus 2pt}{4pt plus 1pt minus 1pt}
 \titlespacing*{\subsection}{0pt}{6pt plus 2pt minus 2pt}{3pt plus 1pt minus 1pt}
 \titlespacing*{\subsubsection}{0pt}{4pt plus 1pt minus 1pt}{2pt plus 1pt minus 1pt}

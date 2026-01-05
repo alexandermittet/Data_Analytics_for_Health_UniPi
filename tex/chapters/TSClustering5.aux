@@ -1,44 +1,44 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Time Series Clustering}{22}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Time Series Clustering}{20}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Feature Representation}{22}{section.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}KMeans Clustering}{22}{section.5.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces KMeans clustering evaluation metrics for ECG time series.\relax }}{22}{table.caption.22}\protected@file@percent }
-\newlabel{tab:kmeans_evaluation}{{5.1}{22}{KMeans clustering evaluation metrics for ECG time series.\relax }{table.caption.22}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Hierarchical Clustering}{22}{section.5.3}\protected@file@percent }
-\newlabel{fig:preprocessed_ts}{{5.1a}{23}{Preprocessed ECG time series\relax }{figure.caption.19}{}}
-\newlabel{sub@fig:preprocessed_ts}{{a}{23}{Preprocessed ECG time series\relax }{figure.caption.19}{}}
-\newlabel{fig:paa_features}{{5.1b}{23}{PAA feature representation\relax }{figure.caption.19}{}}
-\newlabel{sub@fig:paa_features}{{b}{23}{PAA feature representation\relax }{figure.caption.19}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Feature representation: (a) 30 preprocessed ECG Lead II time series (z-normalized, 100 time points). (b) Corresponding PAA feature vectors (20 segments).\relax }}{23}{figure.caption.19}\protected@file@percent }
-\newlabel{fig:ts_feature_representation}{{5.1}{23}{Feature representation: (a) 30 preprocessed ECG Lead II time series (z-normalized, 100 time points). (b) Corresponding PAA feature vectors (20 segments).\relax }{figure.caption.19}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.\relax }}{23}{figure.caption.20}\protected@file@percent }
-\newlabel{fig:kmeans_elbow}{{5.2}{23}{Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.\relax }{figure.caption.20}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces KMeans cluster-average PAA profiles ($k=5$), revealing distinct temporal patterns in ECG morphology.\relax }}{24}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:kmeans_profiles}{{5.3}{24}{KMeans cluster-average PAA profiles ($k=5$), revealing distinct temporal patterns in ECG morphology.\relax }{figure.caption.21}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Hierarchical clustering dendrogram (Ward linkage, 200 patients). Multiple levels of structure suggest continuous variation rather than discrete categories.\relax }}{24}{figure.caption.23}\protected@file@percent }
-\newlabel{fig:hierarchical_dendrogram}{{5.4}{24}{Hierarchical clustering dendrogram (Ward linkage, 200 patients). Multiple levels of structure suggest continuous variation rather than discrete categories.\relax }{figure.caption.23}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Hierarchical clustering PAA profiles ($k=5$, Ward linkage), showing similar patterns to KMeans with different assignments.\relax }}{24}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:hierarchical_profiles}{{5.5}{24}{Hierarchical clustering PAA profiles ($k=5$, Ward linkage), showing similar patterns to KMeans with different assignments.\relax }{figure.caption.24}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}Density-Based Clustering (DBSCAN)}{24}{section.5.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces DBSCAN cluster-average PAA profiles (eps=0.8, min\_samples=10). 27 clusters reflect high diversity of ECG patterns. We observe that the yellow cluster consistently has the more extreme values.\relax }}{25}{figure.caption.25}\protected@file@percent }
-\newlabel{fig:dbscan_profiles}{{5.6}{25}{DBSCAN cluster-average PAA profiles (eps=0.8, min\_samples=10). 27 clusters reflect high diversity of ECG patterns. We observe that the yellow cluster consistently has the more extreme values.\relax }{figure.caption.25}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.5}Clinical Interpretation}{25}{section.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.6}Evaluation and Comparison}{25}{section.5.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Comparison of clustering methods applied to ECG time series PAA features. DBSCAN silhouette score calculated on non-noise points only.\relax }}{25}{table.caption.28}\protected@file@percent }
-\newlabel{tab:clustering_comparison}{{5.2}{25}{Comparison of clustering methods applied to ECG time series PAA features. DBSCAN silhouette score calculated on non-noise points only.\relax }{table.caption.28}{}}
-\newlabel{fig:age_distribution}{{5.7a}{26}{Age distribution by cluster\relax }{figure.caption.26}{}}
-\newlabel{sub@fig:age_distribution}{{a}{26}{Age distribution by cluster\relax }{figure.caption.26}{}}
-\newlabel{fig:gender_distribution}{{5.7b}{26}{Gender distribution by cluster\relax }{figure.caption.26}{}}
-\newlabel{sub@fig:gender_distribution}{{b}{26}{Gender distribution by cluster\relax }{figure.caption.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Demographic characteristics: (a) Similar age distributions across clusters. (b) Balanced gender proportions, indicating ECG patterns not driven by demographics.\relax }}{26}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:age_gender_clusters}{{5.7}{26}{Demographic characteristics: (a) Similar age distributions across clusters. (b) Balanced gender proportions, indicating ECG patterns not driven by demographics.\relax }{figure.caption.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Top 10 diagnoses distribution. AMI, Heart Failure, and Atrial Fibrillation appear in all clusters with similar frequencies, suggesting limited discriminative power.\relax }}{26}{figure.caption.27}\protected@file@percent }
-\newlabel{fig:diagnosis_clusters}{{5.8}{26}{Top 10 diagnoses distribution. AMI, Heart Failure, and Atrial Fibrillation appear in all clusters with similar frequencies, suggesting limited discriminative power.\relax }{figure.caption.27}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Feature Representation}{20}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}KMeans Clustering}{20}{section.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces KMeans clustering evaluation metrics for ECG time series.\relax }}{20}{table.caption.22}\protected@file@percent }
+\newlabel{tab:kmeans_evaluation}{{5.1}{20}{KMeans clustering evaluation metrics for ECG time series.\relax }{table.caption.22}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Hierarchical Clustering}{20}{section.5.3}\protected@file@percent }
+\newlabel{fig:preprocessed_ts}{{5.1a}{21}{Preprocessed ECG time series\relax }{figure.caption.19}{}}
+\newlabel{sub@fig:preprocessed_ts}{{a}{21}{Preprocessed ECG time series\relax }{figure.caption.19}{}}
+\newlabel{fig:paa_features}{{5.1b}{21}{PAA feature representation\relax }{figure.caption.19}{}}
+\newlabel{sub@fig:paa_features}{{b}{21}{PAA feature representation\relax }{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Feature representation: (a) 30 preprocessed ECG Lead II time series (z-normalized, 100 time points). (b) Corresponding PAA feature vectors (20 segments).\relax }}{21}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:ts_feature_representation}{{5.1}{21}{Feature representation: (a) 30 preprocessed ECG Lead II time series (z-normalized, 100 time points). (b) Corresponding PAA feature vectors (20 segments).\relax }{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.\relax }}{21}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:kmeans_elbow}{{5.2}{21}{Elbow method for KMeans: inertia vs. $k$. Gradual decrease without pronounced elbow suggests continuous variation in ECG patterns.\relax }{figure.caption.20}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Density-Based Clustering (DBSCAN)}{21}{section.5.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces KMeans cluster-average PAA profiles ($k=5$), revealing distinct temporal patterns in ECG morphology.\relax }}{22}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:kmeans_profiles}{{5.3}{22}{KMeans cluster-average PAA profiles ($k=5$), revealing distinct temporal patterns in ECG morphology.\relax }{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Hierarchical clustering dendrogram (Ward linkage, 200 patients). Multiple levels of structure suggest continuous variation rather than discrete categories.\relax }}{22}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:hierarchical_dendrogram}{{5.4}{22}{Hierarchical clustering dendrogram (Ward linkage, 200 patients). Multiple levels of structure suggest continuous variation rather than discrete categories.\relax }{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Hierarchical clustering PAA profiles ($k=5$, Ward linkage), showing similar patterns to KMeans with different assignments.\relax }}{22}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:hierarchical_profiles}{{5.5}{22}{Hierarchical clustering PAA profiles ($k=5$, Ward linkage), showing similar patterns to KMeans with different assignments.\relax }{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces DBSCAN cluster-average PAA profiles (eps=0.8, min\_samples=10). 27 clusters reflect high diversity of ECG patterns. We observe that the yellow cluster consistently has the more extreme values.\relax }}{23}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:dbscan_profiles}{{5.6}{23}{DBSCAN cluster-average PAA profiles (eps=0.8, min\_samples=10). 27 clusters reflect high diversity of ECG patterns. We observe that the yellow cluster consistently has the more extreme values.\relax }{figure.caption.25}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Clinical Interpretation}{23}{section.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Evaluation and Comparison}{23}{section.5.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Comparison of clustering methods applied to ECG time series PAA features. DBSCAN silhouette score calculated on non-noise points only.\relax }}{23}{table.caption.28}\protected@file@percent }
+\newlabel{tab:clustering_comparison}{{5.2}{23}{Comparison of clustering methods applied to ECG time series PAA features. DBSCAN silhouette score calculated on non-noise points only.\relax }{table.caption.28}{}}
+\newlabel{fig:age_distribution}{{5.7a}{24}{Age distribution by cluster\relax }{figure.caption.26}{}}
+\newlabel{sub@fig:age_distribution}{{a}{24}{Age distribution by cluster\relax }{figure.caption.26}{}}
+\newlabel{fig:gender_distribution}{{5.7b}{24}{Gender distribution by cluster\relax }{figure.caption.26}{}}
+\newlabel{sub@fig:gender_distribution}{{b}{24}{Gender distribution by cluster\relax }{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Demographic characteristics: (a) Similar age distributions across clusters. (b) Balanced gender proportions, indicating ECG patterns not driven by demographics.\relax }}{24}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:age_gender_clusters}{{5.7}{24}{Demographic characteristics: (a) Similar age distributions across clusters. (b) Balanced gender proportions, indicating ECG patterns not driven by demographics.\relax }{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Top 10 diagnoses distribution. AMI, Heart Failure, and Atrial Fibrillation appear in all clusters with similar frequencies, suggesting limited discriminative power.\relax }}{24}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:diagnosis_clusters}{{5.8}{24}{Top 10 diagnoses distribution. AMI, Heart Failure, and Atrial Fibrillation appear in all clusters with similar frequencies, suggesting limited discriminative power.\relax }{figure.caption.27}{}}
 \@setckpt{chapters/TSClustering5}{
-\setcounter{page}{28}
+\setcounter{page}{25}
 \setcounter{equation}{0}
 \setcounter{enumi}{0}
 \setcounter{enumii}{0}

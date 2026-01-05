@@ -118,7 +118,7 @@ An essential step following the merge was the analysis of data completeness acro
 \subsection{Composite Feature Engineering and Clinical Interpretation}
 To create patient profiles encapsulating acute physiological status, composite features were calculated using robust Z-score standardisation: $Z(X) = (X - \text{Median}(X)) / (\text{IQR}(X) + \epsilon)$. The composite features are:
 {\footnotesize
-\begin{flalign*}
+\hspace{-1cm}\begin{flalign*}
 &\text{Micro Resistance} = \text{resistant\_ratio} \cdot \ln(1 + \text{unique\_org} + \text{unique\_spec}) && \\
 &\text{Procedure Density} = \text{total\_proc} / \max(1, \text{span\_days}) \quad
 \text{Diagnosis Burden} = \ln(1 + \text{n\_diag}) && \\
