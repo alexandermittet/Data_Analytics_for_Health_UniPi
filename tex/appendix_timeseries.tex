@@ -1,0 +1,57 @@
+    \chapter{Appendix: Time Series Supplementary Material}
+
+    %%%%%%%%%%%%%%%
+    \section{DBSCAN Parameter Exploration}
+
+    Parameter exploration details for DBSCAN clustering are provided in Table~\ref{tab:dbscan_params}.
+
+    \begin{table}[h!]
+    \centering
+    \small
+    \begin{tabular}{lrr}
+    \hline
+    \textbf{eps} & \textbf{min\_samples} & \textbf{Clusters / Noise} \\ \hline
+    0.5 & 5 & 26 / 955 \\
+    0.5 & 10 & 25 / 1067 \\
+    0.8 & 5 & 28 / 147 \\
+    0.8 & 10 & 27 / 168 \\
+    1.0 & 10 & 28 / 68 \\
+    1.2 & 10 & 28 / 35 \\ \hline
+    \end{tabular}
+    \caption{DBSCAN parameter exploration results. Lower \textit{eps} values produce many small clusters with high noise rates, while higher values merge clusters but reduce noise detection.}
+    \label{tab:dbscan_params}
+    \end{table}
+
+    %%%%%%%%%%%%%%%
+    \section{Additional Classification Analysis}
+
+    \subsection{F1-Score Comparison}
+
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.5\linewidth]{plots/6.tsc_f1_scores.jpg}
+        \caption{F1-score rankings. The Shapelet classifier achieves the highest F1-score (0.5758).}
+        \label{fig:f1_comparison}
+    \end{figure}
+
+    \subsection{Shapelet Analysis}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{subfigure}[b]{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{plots/6.tsc_shapelet_feature_importances.jpg}
+            \caption{Shapelet feature importance}
+            \label{fig:shapelet_importance}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{plots/6.tsc_top_shapelets_visualization.jpg}
+            \caption{Top discriminative shapelets}
+            \label{fig:shapelet_visualization}
+        \end{subfigure}
+        \caption{Shapelet analysis: (a) Feature importance scores showing relatively uniform contributions, with Shapelet 3 (length 22) and Shapelet 7 (length 31) having highest importance. (b) Visualizations of discriminative patterns, likely corresponding to ECG waveform components (QRS complexes, ST segments) altered in ischemic conditions.}
+        \label{fig:shapelet_analysis}
+    \end{figure}
+

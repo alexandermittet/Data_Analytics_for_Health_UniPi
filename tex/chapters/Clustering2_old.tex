@@ -1,0 +1,385 @@
+\chapter{Clustering analysis}
+In this chapter we will outline different clustering algorithms applied to the clustering patient profile described in the last chapter. We will use only the 11 numerical features for the clustering. The data is being scaled with \textit{sklearn's RobustScaler} to counter the effect of outliers.
+
+\section{K-means}
+\subsection{Optimal Cluster Selection (k)}
+To determine the optimal number of clusters ($k$) for patient profiling, multiple internal validation metrics were employed, including the Elbow Method, average Silhouette score, Davies--Bouldin index, and Calinski--Harabasz index. The objective was to identify a clustering configuration that balances internal cohesion, separation, and clinical interpretability.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_13_0.png}
+    \caption{Internal validation metrics for $k$ selection.}
+    \label{fig:metrics_k_selection}
+\end{figure}
+
+Across the evaluated range of $k$ values (Figure~\ref{fig:metrics_k_selection}), the metrics yielded partially divergent recommendations. The average Silhouette score and Calinski--Harabasz index both attained their global maxima at $\mathbf{k=2}$, with a Silhouette score of 0.635 and a Calinski--Harabasz score of approximately 2100. The Davies--Bouldin index reached its minimum at $k=4$, although $k=2$ remained a close second. The Elbow Method did not exhibit a clear inflection point and was therefore inconclusive.
+
+To further assess cluster quality, silhouette plots for $k=2$, $k=3$, and $k=4$ were examined (Figure~\ref{fig:silhouette_plots}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_15_0.png}
+    \caption{Silhouette plots for $k=2$, $k=3$, and $k=4$.}
+    \label{fig:silhouette_plots}
+\end{figure}
+
+The silhouette analysis strongly supports $\mathbf{k=2}$. Both clusters exhibit strictly positive silhouette values, indicating that all observations are better matched to their assigned cluster than to the alternative. In contrast, $k=3$ shows a substantially lower average silhouette score (0.258), while $k=4$ contains negatively valued silhouettes, indicating misclassification. Consequently, $k=2$ was selected as the optimal clustering solution.
+
+\subsection{Characterization of the $k=2$ Clusters}
+
+The final K-means model with $k=2$ produced two highly imbalanced clusters: Cluster~0 containing 347 patients (6.7\%) and Cluster~1 containing 4,819 patients (93.3\%).
+
+\subsubsection{Centroid Analysis}
+
+Cluster centroids represent the average patient profiles and highlight the features driving cluster separation (Figure~\ref{fig:centroids_k2}). Although clustering was performed on robustly scaled data, centroid values are presented in the original (log-transformed) scale to preserve clinical interpretability.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_22_1.png}
+    \caption{Comparison of cluster centroids for $k=2$ (log scale).}
+    \label{fig:centroids_k2}
+\end{figure}
+
+Cluster~0 is characterized by substantially higher values across nearly all clinical burden indices, indicating markedly increased physiological stress and disease complexity. The most discriminative features include elevated \textit{renal\_failure\_index}, \textit{metabolic\_stress\_index}, \textit{micro\_resistance\_score}, and \textit{inflammation\_liver\_stress\_index}, alongside higher \textit{abnormal\_ratio} and \textit{qc\_fail\_ratio}. In contrast, Cluster~1 consistently exhibits lower centroid values, corresponding to a less severe clinical profile. Minimal centroid differences are observed for \textit{fluid\_diversity}, \textit{procedure\_span\_days\_missing}, and \textit{gender\_F}.
+
+\subsubsection{Distributional Comparison}
+
+Feature-wise distribution comparisons further corroborate the centroid analysis (Figure~\ref{fig:distributions_k2}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_24_0.png}
+    \caption{Feature distribution comparison between clusters and the overall population.}
+    \label{fig:distributions_k2}
+\end{figure}
+
+Stress and failure indices, including \textit{renal\_failure\_index}, \textit{metabolic\_stress\_index}, and \textit{inflammation\_liver\_stress\_index}, show pronounced rightward shifts for Cluster~0, indicating more extreme pathological values. Similarly, \textit{hematologic\_stability\_score} is skewed toward lower values in Cluster~0, reflecting reduced hematologic stability. Variables such as \textit{gender\_F} display nearly identical distributions, confirming their negligible role in cluster differentiation.
+
+\subsubsection{Low-Dimensional Visualization and Age Analysis}
+
+Dimensionality reduction using PCA and UMAP confirms the separation achieved by $k=2$ (Figures~\ref{fig:pca_k2} and~\ref{fig:umap_k2}), with Cluster~0 forming a distinct group displaced from the dense core of Cluster~1.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_27_0.png}
+    \caption{PCA visualization of the $k=2$ clustering.}
+    \label{fig:pca_k2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_29_0.png}
+    \caption{UMAP visualization of the $k=2$ clustering.}
+    \label{fig:umap_k2}
+\end{figure}
+
+An analysis of age distributions (Figure~\ref{fig:age_k2}) shows nearly identical mean ages across clusters (69.85 vs.\ 68.93 years), indicating that clustering is driven by clinical burden rather than demographic differences.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.1_kmeans_clustering_34_1.png}
+    \caption{Age distribution by cluster.}
+    \label{fig:age_k2}
+\end{figure}
+
+\subsection{Evaluation of Clustering Results}
+
+The $k=2$ K-means solution yields a clear stratification between a small, high-severity patient group and a large, lower-burden majority. This separation is primarily driven by composite indices reflecting multi-organ stress and failure, and is supported by strong internal validation scores, including the highest average Silhouette and Calinski--Harabasz values.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Figure~\ref{fig:k-selection} summarizes the behavior of these metrics across different values of $k$. The Elbow Method shows a pronounced reduction in within-cluster sum of squares when increasing $k$ from 2 to 3, followed by a substantially flatter curve thereafter, indicating diminishing gains from additional clusters. The average Silhouette score reaches its maximum at $k=2$ and decreases sharply for larger values of $k$, suggesting reduced cluster separation. Consistently, the Davies--Bouldin index achieves its minimum at $k=2$, while the Calinski--Harabasz index is maximized at the same value. Together, these metrics unanimously indicate that $k=2$ provides the most favorable trade-off between compactness and separation.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/2.1.1_k_selection_metrics.jpg}
+    \caption{Cluster validity metrics for selecting the optimal number of clusters $k$. From top left to bottom right: Elbow Method (inertia), average Silhouette score, Davies--Bouldin index, and Calinski--Harabasz index.}
+    \label{fig:k-selection}
+\end{figure}
+
+To further assess cluster structure at small values of $k$, Figure~\ref{fig:silhouette-analysis} presents detailed silhouette plots for $k \in \{2,3,4\}$. For $k=2$, nearly all samples exhibit high positive silhouette coefficients, indicating strong intra-cluster cohesion and clear inter-cluster separation. In contrast, increasing $k$ to 3 or 4 results in the emergence of clusters with low or negative silhouette values, suggesting overlapping or artificially partitioned groups. This behavior is characteristic of over-clustering, where additional clusters do not correspond to meaningful structure in the data.
+
+% TODO REPLACE FIGURE WITH CORREC TONE WITH 3 and 4
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/2.1.1_silhouette_analysis.jpg}
+    \caption{Silhouette analysis for $k = 2, 3, 4$. Higher and more uniformly positive silhouette coefficients for $k=2$ indicate superior cluster separation compared to larger values of $k$.}
+    \label{fig:silhouette-analysis}
+\end{figure}
+
+Based on the consistent agreement across all evaluation criteria and the stability observed in the silhouette analysis, we selected $k=2$ for all subsequent K-means clustering experiments.
+
+\subsection{Characterization of the clusters}
+The K-Means algorithm identified two primary clusters ($k=2$) which exhibit a significant disparity in size and clinical complexity. Cluster 0 represents the vast majority of the population (94.2\%, $n=4,864$), while Cluster 1 constitutes a specialized minority (5.8\%, $n=302$). The characterization of these groups is performed by analyzing the geometric centroids and the relative distribution of clinical indicators.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/2.1.2_centroids_comparison.jpg}
+        \caption{Centroid feature influence}
+        \label{fig:centroids}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/2.1.2_cluster_characteristics_heatmap.jpg}
+        \caption{Feature distribution heatmap}
+        \label{fig:heatmap}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[b]{0.7\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/2.1.2_pca_vs_umap_comparison.png}
+        \caption{Dimensionality reduction (PCA vs UMAP)}
+        \label{fig:dim_reduction}
+    \end{subfigure}
+    \caption{Clustering visualization and characteristic analysis for $k=2$.}
+    \label{fig:clustering_combined}
+\end{figure}
+
+The centroids reveal that **Cluster 0** corresponds to high-acuity patients. This group is characterized by a high \texttt{metabolic\_stress\_index} (0.57) and significant \texttt{history\_depth} (0.76). Most critically, this cluster captures all clinical mortality within the dataset, with an \texttt{is\_dead} rate of 8.2\%. In contrast, **Cluster 1** represents a "low-activity" or baseline group. The centroids for this cluster are effectively zero across the primary stress indices, and it contains no mortality records. 
+
+As visualized in Figure \ref{fig:dim_reduction}, the UMAP projection shows a tight, dense structure for Cluster 1, suggesting it represents a highly homogenous group of stable patients. Cluster 0 shows significantly higher variance, reflecting the heterogeneous nature of clinical instability in the cardiac cohort.
+
+\subsection{Evaluation}
+
+The clustering results were evaluated using both internal cohesion and external separation metrics. The performance indicates an exceptionally well-defined structural split in the data.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lrl}
+\hline
+\textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\ \hline
+Silhouette Score & 0.9410 & Excellent separation and internal consistency. \\
+Davies-Bouldin Score & 0.0490 & Extremely low; indicates high cluster distinctness. \\
+Calinski-Harabasz Score & 98,572.63 & Highly defined cluster boundaries. \\
+Inertia & 87,249.65 & Measured within-cluster variance. \\ \hline
+\end{tabular}
+\caption{K-Means evaluation metrics summary.}
+\label{tab:evaluation_metrics}
+\end{table}
+
+The Silhouette Score of $0.9410$ is remarkably high, suggesting that the distance between the two clusters is substantially larger than the internal diameter of the clusters themselves. This is further corroborated by the Davies-Bouldin Score ($0.0490$), confirming that the "High-Acuity" and "Baseline" profiles are mathematically distinct. While the high scores validate the structural integrity of the clusters, they also reflect the inherent binary nature of the derived features, specifically the prevalence of patients with minimal clinical recording versus those with complex hospital histories.
+
+\section{Density-Based Clustering (DBSCAN)}
+Density-Based Spatial Clustering of Applications with Noise (DBSCAN) was applied to the patient profile data. Unlike partitioning methods, DBSCAN is advantageous as it can identify clusters of arbitrary shape and automatically determine the number of clusters while inherently identifying noise or outlier points.
+
+\subsection{Optimal Parameter Selection}
+DBSCAN requires two key parameters: the radius $\epsilon$ (eps) and the minimum number of samples ($min\_samples$) required to form a dense region.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/2.2_density_based_clustering_7_0.png}
+    \caption{K-distance Graph ($k=4$) for $\epsilon$ Selection}
+    \label{fig:k_distance}
+\end{figure}
+
+Initial estimation of the $\epsilon$ parameter was performed using the K-distance graph (Figure \ref{fig:k_distance}). The k-distance plot shows the distance to the $k^{th}$ nearest neighbor sorted in descending order. The suggested $\epsilon$ value derived from the 5th percentile (red dashed line) was 1.5739.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.2_density_based_clustering_10_0.png}
+    \caption{DBSCAN Parameter Grid Search Results}
+    \label{fig:dbscan_grid_search}
+\end{figure}
+
+A comprehensive grid search was then performed to evaluate different combinations of $\epsilon$ and $min\_samples$ based on internal validation metrics (Figure \ref{fig:dbscan_grid_search}).
+
+The optimal parameters were selected based on maximizing the Silhouette Score and minimizing the Davies--Bouldin index while maintaining a low noise ratio and obtaining a meaningful number of clusters.
+
+The combination $\mathbf{\epsilon \approx 6.14}$ and $\mathbf{min\_samples=5}$ was chosen:
+\begin{enumerate}
+    \item This combination yields a highly positive \textbf{Silhouette Score of 0.868}, the highest recorded score across the grid (Figure \ref{fig:dbscan_grid_search}, bottom left).
+    \item The corresponding \textbf{Davies--Bouldin Score is 0.244}, representing a strong separation quality (Figure \ref{fig:dbscan_grid_search}, bottom right).
+    \item This set of parameters results in \textbf{2 clusters} (Figure \ref{fig:dbscan_grid_search}, top left).
+    \item The noise ratio for these parameters is exceptionally low, at $\mathbf{0.17\%}$ (Figure \ref{fig:dbscan_grid_search}, top right), confirming that almost all data points belong to a dense region.
+\end{enumerate}
+
+\subsection{Characterization of Obtained Clusters}
+The final DBSCAN clustering using the optimized parameters ($\epsilon \approx 6.14, min\_samples=5$) resulted in two main clusters (Cluster 0 and Cluster 1) and a small set of noise points (Cluster -1).
+
+\subsubsection{Centroid Analysis}
+The centroid comparison (Figure \ref{fig:dbscan_centroids}) utilizes the symlog scale to visualize the characteristics distinguishing the dense regions.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_16_1.png}
+    \caption{DBSCAN Cluster Centroids Comparison (k=2) in Symlog Scale}
+    \label{fig:dbscan_centroids}
+\end{figure}
+
+Cluster 0 (pink) is defined by higher average values for attributes like \texttt{fluid\_diversity} (reaching approximately $10^0$) and \texttt{renal\_failure\_index} (reaching approximately $10^{-0.5}$). Cluster 1 (gold) exhibits extremely high values for \texttt{metabolic\_stress\_index} (above $10^0$) but is severely negatively correlated with indices like \texttt{renal\_failure\_index}, \texttt{hematologic\_stability\_score}, and \texttt{oxygenation\_dysfunction\_index} (falling below $10^{-1}$), suggesting a profile distinct from the main population.
+
+\subsubsection{Variable Distribution and Noise}
+Distribution plots visualize how the clustered data points are separated for different features (Figure \ref{fig:dbscan_distributions}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_17_0.png}
+    \caption{Comparison of Variable Distributions (Cluster 0, Cluster 1, and Noise)}
+    \label{fig:dbscan_distributions}
+\end{figure}
+
+For features such as \texttt{abnormal\_ratio} and \texttt{micro\_resistance\_score}, Cluster 0 forms the bulk of the dense region close to zero. The noise points (grey) often lie in sparsely populated regions outside the dense distributions of the core clusters.
+
+\subsubsection{Age Characteristics}
+The age analysis (Figure \ref{fig:dbscan_age}) reveals significant demographic differences related to the noise component.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_22_1.png}
+    \caption{Age Distribution and Statistics by DBSCAN Cluster}
+    \label{fig:dbscan_age}
+\end{figure}
+
+The majority group, Cluster 0, has a mean age of 69.06 years (median 70.0). Due to the parameter choice, Cluster 1 consists of only a single subject with an age of 18.0 years. The small number of noise points (Cluster -1) have a mean age of 57.2 years. This confirms that the clustering effectively partitioned the data based on density derived from the clinical indices, irrespective of age for the main Cluster 0. Since DBSCAN defines noise as points lacking sufficient neighbors within the radius $\epsilon$, the noise group consists of data points that are structurally and statistically unique, confirming they are true outliers in the 11-dimensional feature space. Their relatively younger age profile compared to the main cluster suggests that these outliers do not represent the common, high-age patient profile but rather highly anomalous cases that fail to form a dense region
+
+\subsubsection{Dimensionality Reduction Visualization}
+Visualization using Principal Component Analysis (PCA) confirms the density-based separation (Figure \ref{fig:dbscan_pca}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_19_0.png}
+    \caption{DBSCAN Clustering Results (k=2) - PCA Visualization}
+    \label{fig:dbscan_pca}
+\end{figure}
+
+The PCA visualization clearly shows Cluster 0 (pink) as the large, tightly packed dense core. Cluster 1 (gold) is visible as a small, distinct group separated from the main core. Critically, the Noise points (red Xs) are displayed as severe outliers lying far away from both dense clusters in the transformed PCA space, demonstrating DBSCAN's ability to isolate these data points effectively.
+
+
+%%%%
+\section{Hierarchical Clustering}
+Hierarchical Clustering (HC) was employed to group the patient profiles, providing a dendrogram that illustrates the relationship between clusters at different levels of similarity. This method requires selecting both a linkage method and determining the optimal number of clusters ($k$).
+
+\subsection{Linkage Method and Optimal Cluster Selection}
+
+We compared four primary linkage methods: Ward, Complete, Average, and Single. The selection of the optimal method and cluster count relies on analyzing internal validation metrics and the structural integrity of the resulting dendrograms.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.3_hierarchical_clustering_9_0.png}
+    \caption{Internal Validation Metrics by Linkage Method}
+    \label{fig:hc_metrics}
+\end{figure}
+
+Analysis of the validation metrics (Figure \ref{fig:hc_metrics}) revealed conflicting optimal configurations:
+\begin{enumerate}
+    \item **Silhouette Score:** The Complete, Average, and Single linkage methods achieved significantly higher Silhouette scores, reaching peaks near 0.95 at low $k$ values (e.g., Average at $k=2$). Ward linkage, however, maintained a respectable score of approximately 0.64 for $k=3$.
+    \item **Calinski--Harabasz Score:** The Ward linkage method produced the highest scores, peaking at over 2000 for $k=2$ and registering 1563.70 for $k=3$, indicating high density and clear separation compared to other methods.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.3_hierarchical_clustering_12_0.png}
+    \caption{Dendrograms for Different Linkage Methods}
+    \label{fig:dendrograms}
+\end{figure}
+
+The Ward linkage method was chosen for the final model due to its performance on the Calinski--Harabasz index and its tendency to create more spherical and balanced clusters, which is often desirable in clinical phenotyping (Figure \ref{fig:dendrograms}). The final configuration selected was **Ward linkage with $k=3$**, yielding a Silhouette score of $\mathbf{0.643545}$, a Davies--Bouldin index of $\mathbf{0.739286}$, and a Calinski--Harabasz score of $\mathbf{1563.702381}$. The $k=3$ cut-off point was chosen based on the Ward dendrogram structure, where three distinct branches emerge before the distance between merges increases significantly.
+
+\subsection{Characterization of Hierarchical Clusters}
+
+Although the final choice was $k=3$, the underlying structure identified by the Ward linkage for $k=4$ (as shown in the available characterization plots) reveals the primary distinguishing characteristics based on clinical indices.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_19_1.png}
+    \caption{Hierarchical Clustering Centroids (ward linkage, k=4) in Log Scale}
+    \label{fig:hc_centroids}
+\end{figure}
+
+The centroid comparison (Figure \ref{fig:hc_centroids}) highlights distinct profiles:
+
+\begin{itemize}
+    \item \textbf{Cluster 3 (High Severity):} This cluster is defined by the highest average clinical severity across multiple metrics. It shows centroid values near $10^2$ for the \texttt{metabolic\_stress\_index}, near $10^1$ for the \texttt{renal\_failure\_index}, and high values for \texttt{abnormal\_ratio} and \texttt{qc\_fail\_ratio} (both near $10^{-3}$). This group represents patients with the most extreme clinical complexity and physiological compromise.
+    \item \textbf{Cluster 1 (Specific Dysfunction):} This group exhibits the highest centroid for \texttt{hematologic\_stability\_score} (near $10^1$) and markedly elevated \texttt{oxygenation\_dysfunction\_index} (near $10^{-2}$), suggesting a patient group with stability issues tied to oxygenation and haematological markers.
+    \item \textbf{Cluster 0 and Cluster 2 (Lower Severity):} These clusters show consistently lower values across most severity indices compared to Clusters 1 and 3, suggesting they represent patients with lower or average disease burden, forming the bulk of the patient population.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_20_0.png}
+    \caption{Distribution Comparison of Features (k=4)}
+    \label{fig:hc_distributions}
+\end{figure}
+
+The distribution plots (Figure \ref{fig:hc_distributions}) confirm these findings, showing that Cluster 3 (Teal/Green) separates clearly in features like \texttt{qc\_fail\_ratio} and \texttt{fluid\_diversity} by occupying the region of high values, while Cluster 0 (Pink) and Cluster 2 (Green) generally overlap with the overall distribution.
+
+\subsubsection{Dimensionality Reduction and Age Analysis}
+
+Visualization via PCA and UMAP confirms the ability of Ward linkage to differentiate distinct patient groups (Figures \ref{fig:hc_pca} and \ref{fig:hc_umap}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_23_0.png}
+    \caption{Dimensionality Reduction Comparison (k=4)}
+    \label{fig:hc_umap}
+\end{figure}
+
+The PCA Projection (Figure \ref{fig:hc_umap}, left) shows that the cluster separation is strongly correlated with the First Principal Component, which explains 53.16\% of the variance. The highest severity groups are separated from the central dense mass.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_25_1.png}
+    \caption{Age Distribution and Statistics by Hierarchical Cluster}
+    \label{fig:hc_age}
+\end{figure}
+
+Age analysis demonstrates that the primary splits are independent of patient age for the larger clusters (Figure \ref{fig:hc_age}). Cluster 0 (1289 subjects), Cluster 1 (66 subjects), and Cluster 3 (6 subjects) all possess similar mean ages (ranging from 68.17 to 69.88 years) and similar median ages (68.0 to 70.0 years). However, Cluster 2, a tiny group of only 2 subjects, has a much lower mean age of 38.0 years, suggesting it captured a rare, younger outlier phenotype.
+
+%%%%%%%%
+\section{Final Evaluation and Comparison}
+This section provides a comparative analysis of the results obtained from K-means, DBSCAN, and Hierarchical Clustering methods, drawing on evaluation metrics, structural agreement, and visualization to select the most appropriate method for the patient profile dataset.
+
+\subsection{Comparison of Internal Validation Metrics}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.4_clustering_evaluation_6_0.png}
+    \caption{Comparative Clustering Evaluation Metrics}
+    \label{fig:comparison_metrics}
+\end{figure}
+
+The comparison of internal validation metrics (Figure \ref{fig:comparison_metrics}) highlights the strengths and weaknesses of each algorithm:
+\begin{enumerate}
+    \item \textbf{DBSCAN} demonstrated the highest performance in metrics that measure cluster quality regardless of shape. It achieved the highest Silhouette Score ($\mathbf{0.789}$) and the lowest Davies--Bouldin index ($\mathbf{0.208}$). This indicates that its resulting two dense clusters (plus noise) are highly separated and internally cohesive.
+    \item \textbf{K-means} achieved the highest Calinski--Harabasz score ($\mathbf{2074}$), significantly higher than Hierarchical (1411) or DBSCAN (153). This superiority reflects K-means' tendency to produce spherical clusters that maximize the ratio of inter-cluster variance to intra-cluster variance. However, its Silhouette score ($\mathbf{0.635}$) was lower than DBSCAN's, suggesting the density-based separation captured a truer partitioning.
+    \item \textbf{Hierarchical} clustering, evaluated at $k=4$ for this comparison, yielded intermediate scores (Silhouette $\mathbf{0.628}$, Davies--Bouldin $\mathbf{0.686}$), suggesting a structure that compromises between the high cohesiveness of DBSCAN and the forced sphericity of K-means.
+\end{enumerate}
+A key limitation across all methods is the resultant cluster size imbalance, particularly in K-means and DBSCAN, which identify only two major groups. Hierarchical clustering, by using $k=4$, managed to resolve slightly more granular sub-phenotypes.
+
+\subsection{Visual Comparison of Cluster Separation}
+
+Visualization via dimensionality reduction techniques confirms the differences in how each algorithm structures the data.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.4_clustering_evaluation_10_0.png}
+    \caption{Clustering Results Visualized via PCA (PC1: 53.2\%, PC2: 19.1\%)}
+    \label{fig:pca_comparison}
+\end{figure}
+
+In the PCA visualization (Figure \ref{fig:pca_comparison}):
+\begin{enumerate}
+    \item \textbf{K-means} forced all data points into two groups, resulting in one large, dense group and one smaller, scattered group, primarily separated along PC1 (53.2\% variance explained).
+    \item \textbf{DBSCAN} strongly emphasized density. It identified one massive, dense Cluster 0 (pink) and effectively isolated a large number of Noise points (red Xs) scattered widely across the plane, especially in the regions where $PC1 < -20$ or $PC2 > 20$. This validates the utility of DBSCAN in identifying true anomalies in the patient dataset.
+    \item \textbf{Hierarchical} clustering, utilizing $k=4$, shows better structural differentiation than K-means, with small, distinct high-severity clusters (yellow/green) separated from the large core (blue/purple).
+\end{enumerate}
+
+The UMAP visualizations (Figure \ref{fig:umap_comparison}) further illustrate the structural findings: DBSCAN identifies a single, expansive dense structure (pink), whereas K-means and Hierarchical methods segment this structure into 2 or 4 groups, respectively.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{plots/2.4_clustering_evaluation_11_0.png}
+    \caption{Clustering Results Visualized via UMAP}
+    \label{fig:umap_comparison}
+\end{figure}
+
+\subsection{Conclusion}
+Based on the comprehensive evaluation, DBSCAN provided the highest quality cluster structure (Silhouette 0.789, Davies--Bouldin 0.208) and was uniquely capable of distinguishing noise points from dense patient populations. K-means was effective at identifying the primary binary split maximizing variance (Calinski--Harabasz 2074) but forced spherical groupings, overlooking subtle variations. Hierarchical clustering (at $k=4$) provided the most nuanced insight into the sub-phenotypes of clinical severity.
+
+For the purpose of identifying the fundamental structure and ensuring the highest separation quality of the bulk patient data from severe outliers, \textbf{DBSCAN is considered the best method}, as it robustly isolates high-impact outliers (Noise points) which often correspond to the most complex or anomalous patient profiles. However, if the objective requires identifying multiple balanced sub-phenotypes, Hierarchical Clustering provides a more useful structure by resolving 4 distinct groups.

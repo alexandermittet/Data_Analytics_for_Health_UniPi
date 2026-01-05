@@ -1,0 +1,44 @@
+\chapter{Clustering Analysis}
+
+This chapter investigates unsupervised patient stratification using three clustering paradigms: K-means, DBSCAN, and Hierarchical Clustering. All methods were applied to the clustering patient profile introduced in the previous chapter, restricted to the 11 numerical features. To mitigate the influence of extreme values, features were scaled using \textit{RobustScaler}.
+
+\section{K-means Clustering}
+
+The optimal number of clusters $k$ was determined using multiple internal validation criteria: the Elbow Method, average Silhouette score, Davies--Bouldin index, and Calinski--Harabasz index. Across all metrics (Figure~\ref{fig:kmeans_k_selection}), $k=2$ consistently emerged as the most favorable solution, with the Silhouette score (0.635) and Calinski--Harabasz index ($\approx 2100$) attaining their maxima at $k=2$. The final K-means solution produced a strongly imbalanced partition: a small cluster of 347 patients (6.7\%) representing a high-severity phenotype with elevated values across composite indices including \textit{renal\_failure\_index}, \textit{metabolic\_stress\_index}, \textit{micro\_resistance\_score}, and \textit{inflammation\_liver\_stress\_index}, and a large cluster of 4,819 patients (93.3\%) representing a baseline or low-burden patient group. Age distributions show nearly identical means across clusters, confirming that separation is driven by clinical burden rather than demographics.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.765\textwidth]{plots/2.1_kmeans_clustering_13_0.png}
+    \caption{Internal validation metrics for K-means cluster selection.}
+    \label{fig:kmeans_k_selection}
+\end{figure}
+
+\section{Density-Based Clustering (DBSCAN)}
+
+DBSCAN was applied to identify dense patient subgroups while explicitly detecting outliers. Parameter selection was guided by a K-distance plot and an extensive grid search over $\epsilon$ (range 0.5--6.5) and $min\_samples$ (3--10), evaluated using Silhouette score, Davies--Bouldin index, and Calinski--Harabasz index. The optimal configuration ($\epsilon \approx 6.14$, $min\_samples=5$) maximized the Silhouette score (0.868), minimized the Davies--Bouldin index (0.244), and yielded two dense clusters with a negligible noise fraction (0.17\%). Centroid analysis reveals two clinically distinct dense regions: one cluster represents the dominant patient population with near-zero stress indices, while the second cluster exhibits extreme metabolic stress accompanied by strong negative correlations with renal, hematologic, and oxygenation stability indices. Noise points are sparsely distributed and represent structurally anomalous cases.
+
+\section{Hierarchical Clustering}
+
+Hierarchical clustering was performed using Ward, Complete, Average, and Single linkage methods. Ward linkage was selected due to its superior Calinski--Harabasz performance and its tendency to produce compact, clinically interpretable clusters. A Ward linkage solution with $k=3$ was selected, yielding a Silhouette score of 0.64 and a Calinski--Harabasz score of 1564. Hierarchical clustering identifies a spectrum of severity profiles: one cluster captures patients with extreme multi-organ stress, while intermediate clusters reflect more specific dysfunction patterns, and the remaining clusters represent lower-burden or baseline profiles.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_9_0.png}
+    \caption{Internal validation metrics across linkage methods.}
+    \label{fig:hc_metrics}
+\end{figure}
+
+\section{Final Evaluation and Comparison}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.4_clustering_evaluation_6_0.png}
+    \caption{Comparison of internal validation metrics across clustering methods.}
+    \label{fig:final_metrics}
+\end{figure}
+
+DBSCAN achieved the highest overall cluster quality (Silhouette 0.789, Davies--Bouldin 0.208) and uniquely identified structurally anomalous patients as noise. K-means maximized between-cluster variance (Calinski--Harabasz 2074) but imposed spherical partitions. Hierarchical clustering provided the most granular phenotyping at the cost of reduced separation quality.
+
+\section{Conclusion}
+
+DBSCAN provides the most robust separation of dense patient populations from clinically anomalous outliers and is therefore selected as the preferred method for identifying structurally distinct patient phenotypes. Hierarchical clustering is advantageous when finer-grained sub-phenotyping is required, while K-means effectively captures the dominant binary severity split.

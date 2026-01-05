@@ -1,0 +1,150 @@
+\chapter{Appendix}
+
+%%%%%%%%%%%%%%%
+\section{Additional Clustering Figures}
+
+\subsection{K-means Clustering}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{plots/2.1_kmeans_clustering_22_1.png}
+    \caption{Centroid comparison for K-means clustering ($k=2$), shown on the original log-transformed scale.}
+    \label{fig:app_kmeans_centroids}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/2.1.2_pca_vs_umap_comparison.png}
+    \caption{Low-dimensional visualization of K-means clustering ($k=2$) using PCA and UMAP.}
+    \label{fig:app_kmeans_dimred}
+\end{figure}
+
+\subsection{DBSCAN Clustering}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_10_0.png}
+    \caption{DBSCAN parameter grid search evaluated using internal validation metrics.}
+    \label{fig:app_dbscan_grid}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.2_density_based_clustering_16_1.png}
+    \caption{DBSCAN cluster centroids (symlog scale).}
+    \label{fig:app_dbscan_centroids}
+\end{figure}
+
+\subsection{Hierarchical Clustering}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{plots/2.3_hierarchical_clustering_19_1.png}
+    \caption{Centroid comparison for hierarchical clustering (Ward linkage).}
+    \label{fig:app_hc_centroids}
+\end{figure}
+
+\subsection{Clustering Method Comparison}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/2.4_clustering_evaluation_10_0.png}
+    \caption{PCA-based comparison of clustering methods.}
+    \label{fig:app_pca_comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/2.4_clustering_evaluation_11_0.png}
+    \caption{UMAP-based comparison of clustering methods.}
+    \label{fig:app_umap_comparison}
+\end{figure}
+
+%%%%%%%%%%%%%%%
+\section{Additional Classification Figures}
+
+\subsection{Error Analysis}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_26_0.png}
+    \caption{Confusion matrices for all models on the test set.}
+    \label{fig:app_confmat}
+\end{figure}
+
+\subsection{Cross-Validation Stability}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_37_0.png}
+    \caption{Cross-validation performance distributions across models.}
+    \label{fig:app_cv}
+\end{figure}
+
+\subsection{Feature Importance}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{plots/4_classification_31_0.png}
+    \caption{Logistic Regression coefficients for the most influential features.}
+    \label{fig:app_feat_lr}
+\end{figure}
+
+%%%%%%%%%%%%%%%
+\section{DBSCAN Parameter Exploration}
+
+Parameter exploration details for DBSCAN clustering are provided in Table~\ref{tab:dbscan_params}.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lrr}
+\hline
+\textbf{eps} & \textbf{min\_samples} & \textbf{Clusters / Noise} \\ \hline
+0.5 & 5 & 26 / 955 \\
+0.5 & 10 & 25 / 1067 \\
+0.8 & 5 & 28 / 147 \\
+0.8 & 10 & 27 / 168 \\
+1.0 & 10 & 28 / 68 \\
+1.2 & 10 & 28 / 35 \\ \hline
+\end{tabular}
+\caption{DBSCAN parameter exploration results. Lower \textit{eps} values produce many small clusters with high noise rates, while higher values merge clusters but reduce noise detection.}
+\label{tab:dbscan_params}
+\end{table}
+
+%%%%%%%%%%%%%%%
+\section{Additional Time Series Classification Analysis}
+
+\subsection{F1-Score Comparison}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/6.tsc_f1_scores.jpg}
+    \caption{F1-score rankings. The Shapelet classifier achieves the highest F1-score (0.5758).}
+    \label{fig:f1_comparison}
+\end{figure}
+
+\subsection{Shapelet Analysis}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/6.tsc_shapelet_feature_importances.jpg}
+        \caption{Shapelet feature importance}
+        \label{fig:shapelet_importance}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/6.tsc_top_shapelets_visualization.jpg}
+        \caption{Top discriminative shapelets}
+        \label{fig:shapelet_visualization}
+    \end{subfigure}
+    \caption{Shapelet analysis: (a) Feature importance scores showing relatively uniform contributions, with Shapelet 3 (length 22) and Shapelet 7 (length 31) having highest importance. (b) Visualizations of discriminative patterns, likely corresponding to ECG waveform components (QRS complexes, ST segments) altered in ischemic conditions.}
+    \label{fig:shapelet_analysis}
+\end{figure}
+
+
+
+

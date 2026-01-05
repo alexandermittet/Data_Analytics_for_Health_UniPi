@@ -1,0 +1,82 @@
+\chapter{Time Series Classification}
+
+We address the binary classification task of distinguishing ischemic from non-ischemic cardiac patients using preprocessed ECG Lead II time series data. The dataset consists of 1,184 patients with balanced classes (609 non-ischemic, 575 ischemic) and diagnostic labels derived from ICD codes. Classification operates on the same 5,000-sample preprocessed time series described in Chapter 3.
+
+%%%%%%%%%%%%%%%
+\section{Feature Extraction}
+
+We extract fixed-length features from the time series using four methods: \textbf{PAA} (30 segments), \textbf{SAX} (30 symbols, 4-symbol alphabet), \textbf{DFT} (30 coefficients), and \textbf{HRV} (6 clinical metrics: \texttt{mean\_rr}, \texttt{std\_rr}, \texttt{rmssd}, \texttt{pnn50}, \texttt{hr\_mean}, \texttt{lf\_hf\_ratio}). The complete feature set comprises 96 features, standardized using \textit{sklearn's StandardScaler}.
+
+%%%%%%%%%%%%%%%
+\section{Classification Models}
+
+We evaluate six classification approaches: \textbf{KNN with DTW} (time series native, $k=5$, downsampled to 20 points), \textbf{Logistic Regression} (linear baseline), \textbf{XGBoost} and \textbf{Random Forest} (ensemble methods), \textbf{Shapelet classifier} (10 shapelets, Decision Tree), and \textbf{SVM} (RBF kernel). All models employ class balancing strategies.
+
+%%%%%%%%%%%%%%%
+\section{Results and Evaluation}
+
+Table~\ref{tab:classification_results} summarizes model performance. The Shapelet classifier achieves the highest F1-score (0.5758) and recall (0.6609), though overall performance is modest (best accuracy = 52.74\%, only slightly above random chance).
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{ROC-AUC} \\ \midrule
+KNN (DTW) & 0.4833 & 0.5357 & 0.4545 & 0.4918 & --- \\
+Logistic Regression & 0.4599 & 0.4425 & 0.4348 & 0.4386 & 0.4750 \\
+XGBoost & 0.5021 & 0.4878 & 0.5217 & 0.5042 & 0.5055 \\
+\textbf{Shapelet} & \textbf{0.5274} & \textbf{0.5101} & \textbf{0.6609} & \textbf{0.5758} & 0.5180 \\
+SVM & 0.5232 & 0.5078 & 0.5652 & 0.5350 & 0.5217 \\
+Random Forest & 0.5021 & 0.4878 & 0.5217 & 0.5042 & 0.5143 \\ \bottomrule
+\end{tabular}
+\caption{Classification performance metrics. The Shapelet classifier achieves the highest F1-score and recall, indicating superior sensitivity for detecting ischemic patients.}
+\label{tab:classification_results}
+\end{table}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{plots/6.tsc_metrics_comparison.jpg}
+    \caption{Model performance comparison across all metrics. Shapelet, SVM, and ensemble methods outperform the linear baseline and KNN with DTW.}
+    \label{fig:metrics_comparison}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{plots/6.tsc_confusion_matrices.jpg}
+    \caption{Confusion matrices for all models. The Shapelet classifier shows the highest true positive rate (76) but also the highest false positive rate (73), consistent with its high recall and moderate precision.}
+    \label{fig:confusion_matrices}
+\end{figure}
+
+\subsection{Feature Importance Analysis}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{plots/6.tsc_feature_importances_xgb.jpg}
+        \caption{XGBoost feature importance}
+        \label{fig:feature_importance_xgb}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{plots/6.tsc_feature_importances_svm.jpg}
+        \caption{SVM permutation importance}
+        \label{fig:feature_importance_svm}
+    \end{subfigure}
+    \caption{Feature importance analysis. SAX features, particularly \texttt{SAX\_28}, dominate XGBoost rankings, while SVM permutation importance shows contributions from multiple feature types.}
+    \label{fig:feature_importance}
+\end{figure}
+
+SAX features, particularly \texttt{SAX\_28}, dominate XGBoost importance rankings, followed by PAA and DFT coefficients. HRV features (\texttt{HRV\_std\_rr}) also appear among top contributors. SVM permutation importance shows a more distributed pattern across all feature types.
+
+\subsection{Shapelet Analysis}
+
+The superior performance of the Shapelet classifier suggests that local pattern matching captures discriminative temporal structures more effectively than global approximation-based features. Detailed shapelet analysis (see Appendix A) reveals relatively uniform feature importance contributions, with Shapelet 3 (length 22) and Shapelet 7 (length 31) having highest importance, likely corresponding to ECG waveform components (QRS complexes, ST segments) altered in ischemic conditions.
+
+%%%%%%%%%%%%%%%
+\section{Discussion}
+
+The modest classification performance (best F1-score = 0.5758) indicates fundamental challenges in ECG-based ischemic detection using the employed feature representations. The near-random performance across most models suggests that global approximation-based features (PAA, SAX, DFT) may not capture the subtle morphological changes associated with ischemic heart disease. Clinical ECG interpretation relies on specific waveform components (ST-segment elevation/depression, T-wave inversion, Q-wave presence) that may be obscured in segment-level approximations. The relative success of the Shapelet classifier supports this hypothesis, as it captures local patterns that may correspond to clinically relevant features. Key limitations include preprocessing potentially removing discriminative high-frequency components, coarse temporal resolutions (30 segments for 5,000-sample signals), binary classification aggregating diverse ischemic conditions, and Lead II signals alone potentially missing full spatial information needed for comprehensive ischemic detection.
+

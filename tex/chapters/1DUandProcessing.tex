@@ -1,0 +1,178 @@
+\chapter{Data Understanding and Preparation}
+% ● Data semantics for each feature (min, max, avg, std) above and the new one 
+% defined by the team  
+% ● Distribution of the variables and statistics  
+% ● Assessing data quality (missing values, outliers, duplicated records, errors) 
+% ● Variables transformations  
+% ● Pairwise correlations and eventual elimination of redundant variables. 
+
+In this chapter we will first analyze the four given medical datasets. They cover  \textit{Heart Diagnoses}, \textit{Laboratory Events}, \textit{Microbiology Events}, and \textit{Procedure Codes}. After a general overview of the data semantics, we will outline the processing steps we took in order to obtain a cleaned and unified patient profile.
+
+\section{Data Understanding}
+The four datasets comprise $4864 \times 25$, $978{,}503 \times 14$, $15{,}587 \times 14$, and $14{,}497 \times 6$ rows and columns, respectively. An initial exploratory analysis was conducted to assess data semantics, cohort composition, and feature distributions.
+
+Figure~\ref{fig:du-df12} presents the exploratory analysis for the laboratory and diagnostic cohorts. The distributions indicate a population skewed toward older age groups with a high prevalence of cardiac-related comorbidities, predominantly associated with ICD codes \textit{I50} and \textit{I21}. Laboratory quality control flags are largely dominated by \textit{OK} status, while \textit{Glucose} and \textit{Potassium} emerge as the most frequently observed laboratory measurements.
+
+Figure~\ref{fig:du-df34} summarises the data understanding metrics for the microbiology and procedural datasets. The microbiology records are primarily characterised by the detection of \textit{Escherichia coli} and \textit{Staphylococcus aureus}, corresponding with frequent use of antibiotics such as \textit{Gentamicin} and \textit{Trimethoprim}. Procedural records are dominated by cardiovascular interventions, most notably coronary arteriography and percutaneous transluminal coronary angioplasty.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{plots/1.1_du_comprehensive_df1_df2.png}
+    \caption{Exploratory data analysis for laboratory and diagnostic cohorts.}
+    \label{fig:du-df12}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{plots/1.1_du_comprehensive_df3_df4.png}
+    \caption{Data understanding metrics for microbiology and procedural records.}
+    \label{fig:du-df34}
+\end{figure}
+
+\subsubsection{Further Data Semantics and Missingness Analysis}
+Tables~\ref{tab:numeric-semantics} and~\ref{tab:missingness} summarise the numerical semantics and missingness patterns across all datasets. The analysis focuses on numeric columns with available summary statistics and variables exhibiting non-zero missingness, respectively.
+\begin{table}[ht]
+\centering
+\scriptsize
+\caption{Numeric column semantics across datasets.}
+\label{tab:numeric-semantics}
+\begin{tabular}{llrrrrr}
+\hline
+Dataset & Column & Rows & Min & Max & Mean & Std \\
+\hline
+Heart & age & 4864 & 18.0 & 95.0 & 68.98 & 14.97 \\
+Heart & anchor\_year & 4864 & 2110 & 2206 & 2155.6 & 23.40 \\
+Micro & dilution\_value & 15587 & 0.06 & 512 & 7.06 & 21.25 \\
+Proc & icd\_code & 14497 & 12 & 272366 & 4771 & 9216 \\
+Labs & value & 978503 & -743 & 886449 & 56.1 & 2223 \\
+Labs & ref\_range\_lower & 978503 & 0 & 2200 & 31.7 & 44.8 \\
+Labs & ref\_range\_upper & 978503 & 0 & 100000 & 55.8 & 400.5 \\
+Labs & valuenum & 978503 & -743 & 886449 & 67.3 & 2176 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\scriptsize
+\caption{Columns with non-zero missingness.}
+\label{tab:missingness}
+\begin{tabular}{llrr}
+\hline
+Dataset & Column & Missing (\%) & Count \\
+\hline
+Heart & dod & 91.82 & 4466 \\
+Labs & ref\_range & 85.06 & 832288 \\
+Heart & age & 71.98 & 3501 \\
+Heart & anchor\_year & 71.98 & 3501 \\
+Heart & gender & 71.98 & 3501 \\
+Micro & dilution\_value & 69.78 & 10876 \\
+Micro & interpretation & 69.08 & 10767 \\
+Micro & org\_name & 65.41 & 10196 \\
+Labs & flag & 64.88 & 634816 \\
+Proc & icd\_code & 18.62 & 2699 \\
+Labs & value & 14.23 & 139255 \\
+Labs & valuenum & 7.27 & 71186 \\
+\hline
+\end{tabular}
+\end{table}
+
+% TODO make shorter, less chatgpt-y style, less verbose
+The numeric semantics in Table~\ref{tab:numeric-semantics} reveal substantial scale heterogeneity across datasets, with laboratory measurements exhibiting extreme ranges and high variance. The high standard deviation of value and valuenum is to be expected as it contains multiple units of measurement and fluids. This highlights the need to carefully handle these columns in the data processing steps. As to be expected by a clinical dataset, we see that the mean age of our patients is almost 69. The anchor\_year seems to be anonymized as the ranges are roughly 200 years in the future.
+
+Table~\ref{tab:missingness} highlights systematic missingness concentrated in outcome-related, microbiology, and reference-range variables, indicating structural sparsity rather than random absence. Especially age and gender reveal a high missingness which needs to be addressed. These patterns motivate downstream strategies including feature aggregation, robustness-aware normalization, and explicit missingness encoding.
+
+
+\section{Data Preparation}
+The preprocessing stage across the four datasets (DF1: heart, DF2: laboratory, DF3: microbiology, and DF4: procedure codes) focused on standardising data types, resolving issues arising from non-standard missing value representation, and enforcing quality control measures essential for robust feature engineering.
+
+\subsection{Standardisation of Missing Values and Data Types}
+All datasets required extensive cleaning of non-standard or "wrong" missing values. For DF1, DF2, and DF3, this process began by removing all newline characters ($\backslash$n) and surrounding whitespaces. Specific entries were identified and converted to $\text{np.NaN}$ or $\text{pd.na}$. This included converting entries in non-numeric columns that exactly matched $\textit{['-']}$, $\textit{['/']}$, $\textit{['.']}$, $\textit{[]}$, or $\textit{[':']}$. Furthermore, any non-numeric column entry containing (case-insensitive) strings such as $\textit{"none"}$, $\textit{"nan"}$, $\textit{"na"}$, $\textit{"N/A"}$, or $\textit{"."}$ was converted to $\text{np.NaN}$. The primary motivation for this step was to prevent the injection of low-quality data and ensure that subsequent numerical operations were accurate. DF4 was noted to have a cleaner starting point regarding the prevalence of these non-standard missing indicators.
+
+For time related data, $\textit{charttime}$, $\textit{storetime}$, and $\textit{dod}$ (date of death) across all relevant datasets (DF1, DF2, DF3, DF4) were explicitly converted to date data types to facilitate temporal analysis. DF1 also required specific handling for $\textit{age}$, $\textit{anchor\_year}$, and $\textit{note\_seq}$, which were stored as $\textit{int64}$ but contained trailing $\textit{.0}$ values.
+
+\subsection{Numerical Extraction and Quality Control}
+Since DF2 had two and DF3 had one exactly duplicated rows, the duplicates were dropped. A unique and complex challenge in DF2 (laboratory) and DF3 (microbiology) was the extraction of numerical information from the non-numeric $\textit{value}$ column to populate missing entries in the less sparse $\textit{valuenum}$ column. Where ranges were encountered, such as $\textit{'80-160'}$, the midpoint was calculated. For comparison entries (e.g., $\textit{>1.050}$ or $\textit{<1}$), a numeric value was estimated by adding or subtracting $0.1$ to the comparison boundary. Any remaining unparsed entries were coerced to $\text{NaN}$.
+
+Quality control was enforced in DF2 and DF3 by inspecting the $\textit{qc\_flag}$. Since approximately $2\%$ of rows were flagged as $\text{FAIL}$, the corresponding $\textit{valuenum\_merged}$ values for these rows were set to $\text{np.nan}$, ensuring that low-quality results were excluded from the analysis. DF2 also corrected cases where the abnormal flag indicator did not align with the computed numeric range of $\textit{valuenum\_merged}$. DF3 performed additional checks to ensure that $\textit{dilution\_text}$ matched the $\textit{dilution\_value}$ and $\textit{dilution\_comparison}$.
+
+\subsection{Specific Imputations (DF1)}
+DF1 required advanced handling of demographic missingness. Missing values in $\textit{dod}$ were inferred as "not dead" to create the $\textit{is\_dead}$ variable. The $\textit{gender}$ variable was manually imputed using text evidence from $\textit{hpi reports}$ or $\textit{physical\_exam}$, employing a multi-step keyword resolution strategy to address conflicts, leaving only six NaNs. 
+
+\subsection{Consolidated and Aggregated Features}
+Features were aggregated using the unique key (\textit{subject\_id}, \textit{hadm\_id}). DF1 had no duplicates; DF2 received \textit{subject\_id} via \textit{hadm\_id} from DF1. A binary \textit{is\_dead} indicator was created from the \textit{dod} column. DF2 labels were grouped by fluid type and aggregated using max (min for Hemoglobin/Hematocrit to capture anemia). Exam indicators (\textit{has\_xray}, \textit{has\_ct}, \textit{has\_ultrasound}, \textit{has\_cath}, \textit{has\_ecg}, \textit{has\_mri}) were summed into \textit{imaging\_variety}. Documentation complexity was computed as the log-sum of text lengths from HPI, physical exam, chief complaint, and reports. ICD-10 codes were used to create \textit{icd\_cat} for cardiac conditions: heart failure (I50), cardiac arrest (I46), arrhythmia (I44-I49), valvular (I34-I36), inflammatory (I32-I33, I40), and acute MI (I21-I22). Binary flags (\textit{has\_hf}, \textit{has\_arr}, \textit{has\_ami}, \textit{has\_arrest}, \textit{has\_valvular}, \textit{has\_inflammatory}) were created and summed into \textit{cardiac\_comorbidity\_score}. Numerical values from textual ranges were extracted as midpoints; comparison values were offset by $\pm 0.1$.
+
+\subsection{Patient Profile Construction and Feature Engineering}
+Following the initial data cleaning and feature aggregation within the individual datasets, the pre-processed notebooks were merged to form a single, comprehensive patient profile base.
+
+\subsection{Data Integration and Completeness Analysis}
+An essential step following the merge was the analysis of data completeness across the four sources, as detailed in Figure \ref{fig:completeness}. The data source availability showed that the $\textit{heart}$ (4,864 patients) and $\textit{labs}$ (4,855 patients) datasets were the most frequently available, while $\textit{micro}$ (2,756 patients) was the least available. The co-occurrence matrix reveals that the $\textit{heart}$ and $\textit{labs}$ data were almost universally present together (4,855 patients), and the $\textit{procedure}$ data was also highly correlated with $\textit{heart}$ data (3,459 patients). Crucially, the $\textit{Completeness Score Distribution}$ indicates that over 2,000 patients had data available from exactly three sources, and nearly 2,000 patients had data available from all four sources, suggesting a high degree of integration for the majority of the cohort.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.81\textwidth]{plots/1.2_create_patient_profile_16_2.png}
+    \caption{Data Source Availability and Completeness Analysis.}
+    \label{fig:completeness}
+\end{figure}
+
+\subsection{Composite Feature Engineering and Clinical Interpretation}
+To create patient profiles encapsulating acute physiological status, composite features were calculated using robust Z-score standardisation: $Z(X) = (X - \text{Median}(X)) / (\text{IQR}(X) + \epsilon)$. The composite features are:
+{\footnotesize
+\begin{flalign*}
+&\text{Micro Resistance} = \text{resistant\_ratio} \cdot \ln(1 + \text{unique\_org} + \text{unique\_spec}) && \\
+&\text{Procedure Density} = \text{total\_proc} / \max(1, \text{span\_days}) \quad
+\text{Diagnosis Burden} = \ln(1 + \text{n\_diag}) && \\
+&\text{Metabolic Stress} = Z(\text{Gluc}) + Z(\text{Lact}) + Z(\text{AG}) - Z(\text{Bicarb}) \quad
+\text{Renal Injury} = Z(\text{Cr}) + Z(\text{BUN}) + Z(\text{Phos}) + Z(\text{K}) && \\
+&\text{Oxygenation Dysf.} = -Z(\text{pO}_2) + Z(\text{pCO}_2) - Z(\text{pH}) - Z(\text{BE}) \quad
+\text{Inflam/Liver} = Z(\text{CRP}) + Z(\text{AST}) + Z(\text{ALT}) + Z(\text{LD}) && \\
+&\text{Hematologic Stab.} = Z(\text{Hgb}) + Z(\text{Hct}) + Z(\text{RBC}) - Z(\text{RDW}) \quad
+\text{Renal Failure Idx} = Z(\text{Cr}_{\text{S}}) - Z(\text{Cr}_{\text{U}}) && \\
+&\text{Diagnostic Intens.} = \ln(1 + \text{Cnt}_{\text{BG}} + \text{Cnt}_{\text{C}} + \text{Cnt}_{\text{L}} + \text{Cnt}_{\text{CBC}}) \quad
+\text{Recent Admission} = 1 / (1 + \text{days\_last\_adm}) &&
+\end{flalign*}
+}
+\textit{Clinical Interpretation:} \textit{Micro Resistance} quantifies infection complexity; \textit{Procedure Density} reflects care intensity; \textit{Diagnosis Burden} measures comorbidity; \textit{Metabolic Stress} captures metabolic instability; \textit{Renal Injury} reflects kidney function; \textit{Oxygenation Dysfunction} summarises respiratory failure; \textit{Inflammation/Liver Stress} measures hepatic injury; \textit{Hematologic Stability} assesses RBC lineage; \textit{Renal Failure Index} detects concentration defects; \textit{Diagnostic Intensity} indicates acuity; \textit{Recent Admission} captures chronic instability.
+
+\subsection{Profile Selection for Downstream Tasks}
+After generating the composite features, two distinct profiles were created to support the downstream clustering and classification tasks. Feature selection was performed through correlation analysis on the combined set, and highly correlated variables were removed to ensure feature independence and reduce multicollinearity, which is crucial for model stability and interpretability. The resulting profiles thus represent optimised subsets of features tailored to physiological segmentation (clustering) or predictive diagnosis (classification).
+
+\subsubsection{Clustering Profile}
+The clustering profile was designed to capture physiological heterogeneity while minimising redundancy and multicollinearity. The selected features (\textbf{abnormal\_ratio}, \textbf{qc\_fail\_ratio}, \textbf{fluid\_diversity}, \textbf{procedure\_span\_days\_missing}, \textbf{gender\_F}, \textbf{micro\_resistance\_score}, \textbf{metabolic\_stress\_index}, \textbf{oxygenation\_dysfunction\_index}, \textbf{inflammation\_liver\_stress\_index}, \textbf{hematologic\_stability\_score}, and \textbf{renal\_failure\_index}) were chosen because they summarise data quality, treatment intensity, infectious burden, and multi-organ physiological dysfunction, enabling meaningful unsupervised segmentation of patient states.
+on defects.
+
+\subsubsection{Classification Profile}
+
+The classification profile extends the clustering feature set with additional variables directly related to prognosis and outcome prediction. The included features (\textbf{cardiac\_comorbidity\_score}, \textbf{has\_hf}, \textbf{has\_arrest}, \textbf{has\_valvular}, \textbf{has\_inflammatory}, \textbf{num\_labs}, \textbf{total\_procedures}, \textbf{total\_microbio\_events}, \textbf{unique\_antibiotics}, and \textbf{is\_dead}) were selected to capture comorbidity burden, clinical intervention intensity, and treatment complexity, enabling effective supervised learning for adverse outcome prediction.
+
+By including comorbidity and intervention metrics in addition to the physiological features, the classification profile is tailored to capture both patient state and treatment complexity, improving predictive accuracy for adverse outcomes.
+
+\subsection{Distributional Characteristics and Correlation of Clinical Profiles}
+\usepackage{subcaption} % in preamble
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/final.png}
+        \caption{Boxplots of all final features.}
+        \label{fig:boxplots}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/final_Class_Corr.png}
+        \caption{Lower-triangle correlation matrix of the final features.}
+        \label{fig:final-corr}
+    \end{subfigure}
+    \caption{Distributional characteristics and correlation structure of the final clinical feature set.}
+    \label{fig:final-profiles}
+\end{figure}
+
+The final feature set exhibits diverse statistical distributions, as illustrated by the boxplots in Figure \ref{fig:boxplots}. A subset of clinical activity markers, including \verb|num_labs|, \verb|total_microbio_events|, and \verb|total_procedures|, show high right-skewness with extreme outliers, representing a sub-population of high-acuity patients who received intense monitoring and intervention. In contrast, the binary indicators for comorbidities, such as \verb|has_hf| and \verb|is_dead|, reveal the underlying prevalence rates within the cohort, while features like \verb|gender_F| and \verb|procedure_span_days_missing| occupy the full range from 0 to 1, reflecting their role as balanced categorical and normalized inputs.
+
+The engineered physiological indices demonstrate the efficacy of the robust standardization process. The \verb|hematologic_stability_score| follows a largely symmetric distribution, whereas the \verb|metabolic_stress_index|, \\ \verb|micro_resistance_score|, and \verb|inflammation_liver_stress_index| are characterized by tight interquartile ranges with significant upper-tail outliers. These outliers are clinically significant, identifying specific instances of severe physiological derangement—such as acute metabolic crisis or multi-drug resistant infections—that are essential for distinguishing high-risk patient phenotypes during hierarchical clustering.
+
+The laboratory-derived indices for organ function, specifically the \verb|renal_failure_index| and \verb|oxygenation_dysfunction_index|, exhibit distinct outlier patterns that highlight critical care thresholds. While the majority of the 5,166 subjects cluster around the median, the presence of extreme negative values in the \verb|renal_failure_index| indicates severe concentration defects, and the wide distribution of \verb|fluid_diversity| captures the varied therapeutic management strategies across the population. These distributions validate the use of median-based scaling to mitigate the influence of extreme clinical states while preserving their diagnostic signal for downstream classification tasks.
+
+\subsection{Correlation Analysis Summary}
+The lower triangle correlation matrix in Figure \ref{fig:final-corr} illustrates the linear relationships between the finalized feature set, confirming a sparse correlation structure with minimal multicollinearity across the primary clinical dimensions. Notable positive associations are restricted to clinically interdependent variables, specifically the correlation between \verb|unique_antibiotics| and \verb|total_microbio_events| ($r=0.67$), while the majority of physiological indices and demographic markers maintain coefficients below 0.2, ensuring feature independence for stable model performance.

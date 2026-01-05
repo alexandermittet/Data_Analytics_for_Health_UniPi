@@ -1,0 +1,83 @@
+\chapter{Classification Analysis}
+In the following chapter we will perform classification on the patient profile with different machine learning algorithms and evaluate their performance.
+
+\section{Objective and Label Generation}
+The primary objective of this stage was the creation of a robust binary classification model capable of distinguishing between ischemic (\texttt{Class 1}) and non-ischemic (\texttt{Class 0}) cardiovascular conditions based on the previously derived patient profiles.
+
+The classification target label was derived directly from the patient's primary ICD diagnoses following a set of specific clinical rules.
+The ischemic class (\texttt{Class 1}) was defined by the presence of ICD codes I20, I21, I22, I24, or I25, while all other cardiovascular codes constituted the non-ischemic class (\texttt{Class 0}). If a patient possessed multiple diagnoses, they were assigned \texttt{Class 1} provided at least one of the diagnoses was ischemic.
+
+\section{Data Preparation and Model Training}
+\subsection{Pre-processing Steps}
+The dataset used is based on the already cleaned and preprocessed dataset from chapter 1, meaning that categorical variables like gender are already encoded. The age column was dropped for classification as it contains too many missing rows and imputation strategies could leverage ICD code groups, which would cause data leakage. No measures regarding class imbalance were taken due to a low class imbalance ratio (Class 0 / Class 1) of $1.18$. The prepared dataset was then split into training and testing subsets of respective sizes $3513$ and $879$.
+
+\subsection{Classification Model Suite}
+A diverse set of six classification models were trained and compared to assess different approaches to the classification problem: Logistic Regression (an interpretable linear model), K-Nearest Neighbors (KNN, an instance-based method), Support Vector Machine (SVM, a kernel-based approach effective for non-linear boundaries), Decision Tree (an interpretable non-linear model), Random Forest (a robust ensemble of trees), and Gradient Boosting (an advanced ensemble method).
+
+\section{Evaluation and Comparative Analysis}
+Model performance was comprehensively evaluated using metrics reported on the test set, including Accuracy, Balanced Accuracy, Precision, Recall, F1-Score, and ROC-AUC, alongside detailed confusion matrices. Cross-Validation Analysis was also performed to ensure the stability of the models.
+
+\subsection{Performance Metrics Comparison}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_25_0.png}
+    \caption{Test set performance metrics comparison (Accuracy, Balanced Accuracy, Precision, Recall, F1-Score, ROC-AUC) across six trained classification models.}
+    \label{fig:metrics}
+\end{figure}
+
+The comparison of test set metrics (Figure \ref{fig:metrics}) revealed generally strong performance across all models. The Gradient Boosting model demonstrated the highest Test Balanced Accuracy (0.860) and Test ROC-AUC (0.930), closely followed by Random Forest (ROC-AUC 0.924). Logistic Regression and SVM showed the highest Test Recall scores (0.916 and 0.908, respectively), indicating superior ability to correctly identify ischemic cases (\texttt{Class 1}).
+
+\subsection{Confusion Matrix Analysis}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_26_0.png}
+    \caption{Confusion Matrices for the classification models on the test set, detailing true positive, true negative, false positive, and false negative counts.}
+    \label{fig:confmat}
+\end{figure}
+The confusion matrices (Figure \ref{fig:confmat}) provide insight into prediction errors. Reflecting its high Recall, Logistic Regression yielded the lowest number of False Negatives (34 instances where Ischemic patients were classified as Non-ischemic) compared to other models like Gradient Boosting (44 FNs) and KNN (63 FNs).
+
+\subsection{ROC-AUC Curve Analysis}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{plots/4_classification_27_0.png}
+    \caption{Receiver Operating Characteristic (ROC) Curves - Model Comparison.}
+    \label{fig:roc_curves}
+\end{figure}
+The Receiver Operating Characteristic (ROC) curves (Figure \ref{fig:roc_curves}) illustrate the discriminative power of the models across various thresholds. The Area Under the Curve (AUC) is used to quantify overall performance. The Gradient Boosting model achieved the highest AUC score of \texttt{0.930}, confirming its superior ability to distinguish between ischemic (\texttt{Class 1}) and non-ischemic (\texttt{Class 0}) conditions. The Random Forest model closely followed with an AUC of \texttt{0.924}. Both Logistic Regression and Support Vector Machine also demonstrated strong discrimination, achieving AUCs of \texttt{0.920} and \texttt{0.910}, respectively. The K-Nearest Neighbors model recorded the lowest AUC among the tested algorithms at \texttt{0.894}.
+
+\subsection{Cross-Validation Analysis}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_37_0.png}
+    \caption{Cross-Validation Analysis showing distribution of Accuracy, Balanced Accuracy, F1-Score, and ROC-AUC scores across validation folds.}
+    \label{fig:cv_analysis}
+\end{figure}
+Cross-validation analysis (Figure \ref{fig:cv_analysis}) was conducted to assess the generalization stability of the models. The box plots show the distribution of performance metrics across different validation folds. For ROC-AUC, both Random Forest and Gradient Boosting exhibited tightly clustered distributions, with median scores approximating \texttt{0.92}, indicating high stability and consistent predictive performance across different subsets of the data. In terms of Balanced Accuracy, models including Logistic Regression, Random Forest, and Gradient Boosting maintained high median scores, generally falling between \texttt{0.8} and \texttt{0.85}, with narrow interquartile ranges, confirming that these models are less prone to variance caused by specific data splits. The consistency across metrics confirms that ensemble methods offer the most robust configurations.
+
+\section{Feature Importance Analysis}
+\subsection{Ensemble Models Feature Ranking}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{plots/4_classification_30_0.png}
+    \caption{Top 15 Feature Importances for Decision Tree, Random Forest, and Gradient Boosting models.}
+    \label{fig:feature_importance_tree}
+\end{figure}
+The feature importance plots for the tree-based ensemble models (Decision Tree, Random Forest, and Gradient Boosting) show remarkable alignment in identifying the most crucial predictors (Figure \ref{fig:feature_importance_tree}). In all three models, the feature \texttt{has\_hf} (presence of heart failure) was the primary driver of classification decisions. For the Gradient Boosting model, \texttt{has\_hf} registered an importance score exceeding \texttt{0.40}. This was followed by \texttt{total\_procedures} (around \texttt{0.15}) and \texttt{has\_valvular} (around \texttt{0.10}). This consistent ranking emphasizes that the presence of heart failure and the complexity quantified by \texttt{total\_procedures} are essential differentiators in the patient profile for distinguishing ischemic outcomes.
+
+\subsection{Logistic Regression Coefficient Analysis}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{plots/4_classification_31_0.png}
+    \caption{Top 15 Feature Coefficients for the Logistic Regression model.}
+    \label{fig:feature_coefficients_lr}
+\end{figure}
+Analyzing the coefficients of the Logistic Regression model (Figure \ref{fig:feature_coefficients_lr}) reveals the linear relationship between features and the odds of being in the ischemic class (\texttt{Class 1}). The feature \texttt{has\_hf} exhibited the largest negative coefficient (approximately \texttt{-1.6}), strongly indicating that its presence decreases the likelihood of an ischemic diagnosis, relative to other diagnoses within this cardiovascular profile. Conversely, \texttt{total\_procedures} had the largest positive coefficient (approximately \texttt{1.2}), suggesting that a high number of procedures significantly increases the odds of an ischemic classification. Other notable negative predictors include \texttt{has\_valvular} (coefficient near \texttt{-1.0}) and \texttt{total\_microbio\_events} (coefficient near \texttt{-0.7}), while \texttt{unique\_antibiotics} (coefficient around \texttt{0.5}) acted as a positive predictor.
+
+
+
+
+
+
+
+
