@@ -6,3 +6,7 @@ Datasets_for_project.zip
 
 *.code-workspace
 time-series-project2025
+
+# Generated data files
+*.pkl
+*.backup
