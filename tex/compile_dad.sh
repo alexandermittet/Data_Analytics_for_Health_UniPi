@@ -44,3 +44,4 @@ rm -f *.aux *.log *.out *.toc *.lof *.lot *.synctex.gz *.bbl *.blg \
 
 echo "Done!"
 
+
